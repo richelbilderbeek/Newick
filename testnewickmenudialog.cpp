@@ -12,7 +12,6 @@
 
 #include "multivector.h"
 #include "newick.h"
-#include "richelbilderbeekprogram.h"
 #include "trace.h"
 #include "testtimer.h"
 #include "testnewick.h"
@@ -142,24 +141,16 @@ ribi::Help ribi::TestNewickMenuDialog::GetHelp() const noexcept
   );
 }
 
-boost::shared_ptr<const ribi::Program> ribi::TestNewickMenuDialog::GetProgram() const noexcept
-{
-  const boost::shared_ptr<const Program> p {
-    new ProgramTestMultiVector
-  };
-  assert(p);
-  return p;
-}
-
 std::string ribi::TestNewickMenuDialog::GetVersion() const noexcept
 {
-  return "1.0";
+  return "2.0";
 }
 
 std::vector<std::string> ribi::TestNewickMenuDialog::GetVersionHistory() const noexcept
 {
   return {
     "2015-06-14: version 1.0: initial versioning",
+    "2015-12-09: version 2.0: moved to own GitHub",
   };
 }
 
