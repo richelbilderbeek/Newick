@@ -1,13 +1,13 @@
-INCLUDEPATH += ../TestNewick
+INCLUDEPATH += $$PWD
 
 SOURCES += \
-    ../TestNewick/testnewick.cpp \
-    ../TestNewick/testnewickdialog.cpp \
-    ../TestNewick/testnewickmenudialog.cpp \
-    ../TestNewick/testnewickresult.cpp
+    $$PWD/testnewick.cpp \
+    $$PWD/testnewickdialog.cpp \
+    $$PWD/testnewickmenudialog.cpp \
+    $$PWD/testnewickresult.cpp
 
 HEADERS  += \
-    ../TestNewick/testnewick.h \
-    ../TestNewick/testnewickdialog.h \
-    ../TestNewick/testnewickmenudialog.h \
-    ../TestNewick/testnewickresult.h
+    $$PWD/testnewick.h \
+    $$PWD/testnewickdialog.h \
+    $$PWD/testnewickmenudialog.h \
+    $$PWD/testnewickresult.h

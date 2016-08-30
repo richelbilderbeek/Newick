@@ -1,10 +1,10 @@
-include(../TestNewick/TestNewickConsole.pri)
+include(TestNewickConsole.pri)
 
 SOURCES += \
-    ../TestNewick/qttestnewickdialog.cpp
+    $$PWD/qttestnewickdialog.cpp
 
 HEADERS  += \
-    ../TestNewick/qttestnewickdialog.h
+    $$PWD/qttestnewickdialog.h
 
 FORMS += \
-    ../TestNewick/qttestnewickdialog.ui
+    $$PWD/qttestnewickdialog.ui
