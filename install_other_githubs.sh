@@ -1,5 +1,5 @@
 #!/bin/bash
 
 # BigInteger
-cd ../richelbilderbeek/RibiLibraries
+cd ../RibiLibraries
 ./bigint.sh
