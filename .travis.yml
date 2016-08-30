@@ -25,6 +25,7 @@ addons:
 
 before_script: 
   - ./download_other_githubs.sh
+  - ./install_other_githubs.sh
 
 script: 
   - ./build_desktop.sh
