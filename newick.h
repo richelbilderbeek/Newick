@@ -325,8 +325,6 @@ struct Newick
   void Test();
   #endif
 
-  //char ValueToChar(const int value);
-
   template <class NewickType>
   double CalculateProbability(
     const NewickType& n,
