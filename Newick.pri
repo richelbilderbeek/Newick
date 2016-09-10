@@ -1,4 +1,4 @@
-INCLUDEPATH += $$PWD
+INCLUDEPATH += ../Newick
 
 SOURCES += \
     $$PWD/newick.cpp \
