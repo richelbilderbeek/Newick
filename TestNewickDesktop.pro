@@ -11,7 +11,7 @@ include(../RibiClasses/CppMultiVector/CppMultiVector.pri)
 include(../BinaryNewickVector/BinaryNewickVector.pri)
 include(Newick.pri)
 include(../NewickVector/NewickVector.pri)
-include(../SortedBinaryNewickVector/SortedBinaryNewickVector.pri)
+include(../RibiClasses/CppSortedBinaryNewickVector/CppSortedBinaryNewickVector.pri)
 include(../TwoDigitNewick/TwoDigitNewick.pri)
 
 include(TestNewickDesktop.pri)
