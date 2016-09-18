@@ -27,8 +27,6 @@ ribi::TestNewickDialog::TestNewickDialog(const int types)
 
   //Test all Newicks
   #ifndef NDEBUG
-  Newick().Test();
-  BinaryNewickVector::Test();
   TwoDigitNewick();
 
   const std::vector<std::string> newicks = Newick().CreateValidNewicks();
