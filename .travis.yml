@@ -28,9 +28,11 @@ before_script:
   - ./install_other_githubs.sh
 
 script: 
-  - ./build_desktop.sh
+  - ./build_test.sh
+  - ./NewickTest
   - ./get_code_cov.sh
   - codecov
+  - ./build_desktop.sh
   - ./do_oclint.sh
 
 after_success: 

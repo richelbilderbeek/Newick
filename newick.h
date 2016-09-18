@@ -42,10 +42,9 @@ namespace ribi {
 
 ///namespace Newick contains general Newick functions,
 ///not using an Newick class
+
 struct Newick
 {
-  Newick();
-
   enum { bracket_open  = -1 };
   enum { bracket_close = -2 };
   enum { comma         = -3 };
@@ -119,11 +118,11 @@ struct Newick
   ///     denominator_terms with appended number_symmetries times a '2'
   ///
   ///From http://www.richelbilderbeek.nl/CppCalcNumOfCombinationsBinary.htm
-  BigInteger CalcNumOfCombinationsBinary(const std::vector<int>& v);
+  BigInteger CalcNumOfCombinationsBinary(const std::vector<int>& v) const;
 
   ///CalcNumOfSymmetries calculates the number of symmetries in a Newick.
   ///From http://www.richelbilderbeek.nl/CppCalcNumOfSymmetriesBinary.htm
-  BigInteger CalcNumOfSymmetriesBinary(std::vector<int> v);
+  BigInteger CalcNumOfSymmetriesBinary(std::vector<int> v) const;
 
   double CalcDenominator(const std::vector<int>& v,const double theta);
 
@@ -136,13 +135,13 @@ struct Newick
   ///If this std::string is not a valid Newick,
   ///CheckNewick throws an exception with a detailed description
   ///From http://www.richelbilderbeek.nl/CppCheckNewick.htm
-  void CheckNewick(const std::string& s);
+  void CheckNewick(const std::string& s) const;
 
   ///CheckNewick checks if a std::vector<int> is a valid Newick.
   ///If this std::vector<int> is not a valid Newick,
   ///CheckNewick throws an exception with a detailed description
   ///From http://www.richelbilderbeek.nl/CppCheckNewick.htm
-  void CheckNewick(const std::vector<int>& v);
+  void CheckNewick(const std::vector<int>& v) const;
 
   ///CreateInvalidNewicks creates std::strings
   ///that cannot and must not be converted to a Newick
@@ -192,7 +191,7 @@ struct Newick
   ///FactorialBigInt returns the factorial of an integer
   ///as a BigInteger.
   ///From http://www.richelbilderbeek.nl/CppFactorialBigInt.htm
-  BigInteger FactorialBigInt(const int n) noexcept;
+  BigInteger FactorialBigInt(const int n) const noexcept;
 
   ///Factorial calculates the factorial of a value.
   ///From http://www.richelbilderbeek.nl/CppFactorial.htm
@@ -211,7 +210,7 @@ struct Newick
   ///.11 11 11 11 111. <- depth layer 1
   ///... .. .. .2 22.. <- depth layer 2
   ///011 11 11 22 2210 <- result of GetDepth
-  std::vector<int> GetDepth(const std::vector<int>& n) noexcept;
+  std::vector<int> GetDepth(const std::vector<int>& n) const noexcept;
 
 
   ///GetFactorialTerms returns all terms from a factorial.
@@ -220,7 +219,7 @@ struct Newick
   std::vector<int> GetFactorialTerms(const int n) noexcept;
 
   std::vector<boost::tuple<std::string,double,double> > GetKnownProbabilities() noexcept;
-  int GetLeafMaxArity(const std::vector<int>& n) noexcept;
+  int GetLeafMaxArity(const std::vector<int>& n) const noexcept;
 
 
   ///GetRootBranches obtains the root branches from a non-unary Newick.
@@ -250,7 +249,7 @@ struct Newick
   ///GetSimplerNewicks creates simpler, derived Newicks from a Newick.
   ///From http://www.richelbilderbeek.nl/CppGetSimplerNewicks.htm
   std::vector<std::vector<int> > GetSimplerNewicks(
-    const std::vector<int>& n) noexcept;
+    const std::vector<int>& n) const noexcept;
 
   ///GetSimplerNewicksFrequencyPairs creates simpler, derived Newicks from a Newick.
   ///Its simpler Newicks are identical to those created by GetSimplerNewicks.
@@ -277,53 +276,49 @@ struct Newick
   ///IsBinaryNewick checks if a Newick is a binary tree,
   ///that is: each node splits in two (not more) branches
   ///From http://www.richelbilderbeek.nl/CppIsBinaryNewick.htm
-  bool IsBinaryNewick(std::vector<int> v) noexcept;
+  bool IsBinaryNewick(std::vector<int> v) const noexcept;
 
   bool IsTrinaryNewick(std::vector<int> v) noexcept;
 
   ///IsUnaryNewick checks if a Newick is a unary tree,
   ///that is: there is only one node.
   ///From http://www.richelbilderbeek.nl/CppIsUnaryNewick.htm
-  bool IsUnaryNewick(const std::vector<int>& v) noexcept;
+  bool IsUnaryNewick(const std::vector<int>& v) const noexcept;
 
   ///IsNewick returns true if a std::string is a valid Newick
   ///and false otherwise.
   ///From http://www.richelbilderbeek.nl/CppIsNewick.htm
-  bool IsNewick(const std::string& s) noexcept;
+  bool IsNewick(const std::string& s) const noexcept;
 
   ///IsNewick returns true if a std::vector<int> is a valid Newick
   ///and false otherwise.
   ///From http://www.richelbilderbeek.nl/CppIsNewick.htm
-  bool IsNewick(const std::vector<int>& v) noexcept;
+  bool IsNewick(const std::vector<int>& v) const noexcept;
 
   ///IsSimple returns true if the Newick std::vector contains
   ///leaves only. For example, the Newick '(1,2,3)' is simple,
   ///the Newick '((1,2),3)' is not simple
   ///From http://www.richelbilderbeek.nl/CppIsNewick.htm
-  bool IsSimple(const std::vector<int>& v) noexcept;
+  bool IsSimple(const std::vector<int>& v) const noexcept;
 
   ///NewickToString converts a Newick std::vector<int> to a
   ///standard-format std::string.
   ///From http://www.richelbilderbeek.nl/CppNewickToString.htm
-  std::string NewickToString(const std::vector<int>& v);
+  std::string NewickToString(const std::vector<int>& v) const;
 
   ///ReplaceLeave replaces the first leaf that it finds by a value.
   ///For example, using ReplaceLeave on '((1,2),(3,4))' with a value
   ///of 42 results in '(42,(3,4))'.
-  std::vector<int> ReplaceLeave(const std::vector<int>& newick,const int value);
+  std::vector<int> ReplaceLeave(const std::vector<int>& newick, const int value) const;
 
   ///StringToNewick converts a std::string to a Newick std::vector<int>
   ///StringToNewick assumes that the input is well-formed and
   ///has both trailing and tailing brackets.
   ///From http://www.richelbilderbeek.nl/CppNewickToVector.htm
-  std::vector<int> StringToNewick(const std::string& newick);
+  std::vector<int> StringToNewick(const std::string& newick) const;
 
   ///Surround surrounds the Newick with brackets
-  std::vector<int> Surround(const std::vector<int>& newick) noexcept;
-
-  #ifndef NDEBUG
-  void Test();
-  #endif
+  std::vector<int> Surround(const std::vector<int>& newick) const noexcept;
 
   template <class NewickType>
   double CalculateProbability(
