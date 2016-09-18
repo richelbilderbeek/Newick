@@ -20,9 +20,7 @@
 
 ribi::TestNewickMenuDialog::TestNewickMenuDialog()
 {
-  #ifndef NDEBUG
-  Test();
-  #endif
+
 }
 
 int ribi::TestNewickMenuDialog::ExecuteSpecific(const std::vector<std::string>& argv) noexcept
@@ -153,23 +151,3 @@ std::vector<std::string> ribi::TestNewickMenuDialog::GetVersionHistory() const n
     "2015-12-09: version 2.0: moved to own GitHub",
   };
 }
-
-#ifndef NDEBUG
-void ribi::TestNewickMenuDialog::Test() noexcept
-{
-  {
-    static bool is_tested{false};
-    if (is_tested) return;
-    is_tested = true;
-  }
-  {
-    NewickCpp98();
-    Newick();
-    TestNewickDialog();
-    TestMultiVector();
-    TestNewickMenuDialog().GetAbout();
-  }
-  const TestTimer test_timer(__func__,__FILE__,2.0);
-  TestNewickMenuDialog().Execute( { "-e","1","-n","((2,2),2)"} );
-}
-#endif

@@ -26,7 +26,7 @@ struct TestNewick;
 
 class QtTestNewickDialog : public QDialog
 {
-  Q_OBJECT
+  Q_OBJECT //!OCLINT
 
 public:
   explicit QtTestNewickDialog(QWidget *parent = 0);
