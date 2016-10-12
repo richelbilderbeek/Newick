@@ -35,7 +35,6 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "BigIntegerLibrary.hh"
 #include "newickcpp98.h"
 #include "newickstorage.h"
-#include "trace.h"
 #pragma GCC diagnostic pop
 
 namespace ribi {

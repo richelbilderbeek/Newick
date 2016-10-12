@@ -31,8 +31,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <boost/lexical_cast.hpp>
 
-#include "trace.h"
-
 namespace ribi {
 
 template <class NewickType>
@@ -167,16 +165,6 @@ void NewickStorage<T>::CleanUp()
       //All cleared except last
       break;
     }
-    #ifndef NTRACE
-    {
-      const std::string trace = "Cleared index "
-        + boost::lexical_cast<std::string>(i)
-        + " with "
-        + boost::lexical_cast<std::string>(m[i].size())
-        + " entries.";
-      //TRACE_FILE(trace);
-    }
-    #endif
     m[i] = std::map<T,double>(); //Clear
   }
 }

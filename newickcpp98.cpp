@@ -375,20 +375,6 @@ std::vector<std::pair<std::vector<int>,int> >
       {
         new_newick = Newick().Surround(new_newick);
       }
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string newick_str_done = Newick::DumbNewickToString(new_newick);
-        TRACE(newick_str_done);
-      }
-      #endif
-      #define DEBUG_2436964926435498753298216832187
-      #ifdef  DEBUG_2436964926435498753298216832187
-      if (!Newick().IsNewick(new_newick))
-      {
-        TRACE(Newick().DumbNewickToString(new_newick));
-      }
-      #endif
-
       assert(Newick().IsNewick(new_newick));
       newicks.push_back(std::make_pair(new_newick, 1));
       continue;
