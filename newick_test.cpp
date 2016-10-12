@@ -520,16 +520,6 @@ BOOST_AUTO_TEST_CASE(ribi_newick_compare_GetSimplerNewicks_and_GetSimplerNewicks
     const int size = boost::numeric_cast<int>(v1.size());
     for (int i=0; i!=size; ++i)
     {
-      #define DEBUG_COMPARE_GSN_VS_GSNFP
-      #ifdef  DEBUG_COMPARE_GSN_VS_GSNFP
-      if (v1[i] != v2[i].first)
-      {
-        TRACE("ERROR: DIFFERENT NEWICK SIMPLIFICATIONS");
-        TRACE(ribi::Newick().NewickToString(newick));
-        TRACE(ribi::Newick().NewickToString(v1[i]));
-        TRACE(ribi::Newick().NewickToString(v2[i].first));
-      }
-      #endif
       BOOST_CHECK(v1[i] == v2[i].first);
     }
     BOOST_CHECK(ribi::Newick().GetSimplerNewicksFrequencyPairs(newick)

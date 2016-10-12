@@ -12,7 +12,6 @@
 #include "newick.h"
 #include "newickvector.h"
 #include "sortedbinarynewickvector.h"
-#include "trace.h"
 #include "testnewick.h"
 #include "testnewickdialog.h"
 #include "twodigitnewick.h"
@@ -23,8 +22,6 @@ ribi::TestNewickDialog::TestNewickDialog(const int types)
     m_text{},
     m_types(types)
 {
-  START_TRACE();
-
   //Test all Newicks
   #ifndef NDEBUG
   TwoDigitNewick();

@@ -54,7 +54,6 @@ include(../RibiClasses/CppContainer/CppContainer.pri)
 include(../RibiClasses/CppFuzzy_equal_to/CppFuzzy_equal_to.pri)
 include(../RibiClasses/CppFileIo/CppFileIo.pri)
 include(../RibiClasses/CppRibiRegex/CppRibiRegex.pri)
-include(../RibiClasses/CppTrace/CppTrace.pri)
 include(../RibiClasses/CppXml/CppXml.pri)
 
 include(../RibiLibraries/BigInteger.pri)

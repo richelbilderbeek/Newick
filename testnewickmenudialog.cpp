@@ -12,8 +12,6 @@
 
 #include "multivector.h"
 #include "newick.h"
-#include "trace.h"
-#include "testtimer.h"
 #include "testnewick.h"
 #include "testnewickdialog.h"
 #pragma GCC diagnostic pop
@@ -112,13 +110,13 @@ ribi::About ribi::TestNewickMenuDialog::GetAbout() const noexcept
     "Richel Bilderbeek",
     "TestNewick",
     "tests the Newick classes",
-    "the 14th of June 2015",
-    "2015-2015",
+    "October 12th of 2016",
+    "2015-2016",
     "http://www.richelbilderbeek.nl/TestNewick.htm",
     GetVersion(),
-    GetVersionHistory());
+    GetVersionHistory()
+  );
   a.AddLibrary("MultiVector version: " + MultiVector<int>::GetVersion());
-  a.AddLibrary("Trace version: " + Trace::GetVersion());
   return a;
 }
 
