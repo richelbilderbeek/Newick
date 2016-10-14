@@ -61,35 +61,6 @@ const ElementType Accumulate_if(
   return init;
 }
 
-///Copy_if was dropped from the standard library by accident.
-///From http://www.richelbilderbeek.nl/CppCopy_if.htm
-template<typename In, typename Out, typename Pred>
-Out Copy_if(In first, In last, Out res, Pred Pr)
-{
-  while (first != last)
-  {
-    if (Pr(*first))
-      *res++ = *first;
-    ++first;
-  }
-  return res;
-}
-
-//From http://www.richelbilderbeek.nl/CppFunctorIncrease.htm
-/*
-struct Increase
-{
-  explicit Increase(const int& init_value = 0) noexcept : m_value(init_value) {}
-  void operator()(int& anything) noexcept
-  {
-    anything = m_value;
-    ++m_value;
-  }
-  private:
-  int m_value;
-};
-*/
-
 BigInteger ribi::Newick::CalcComplexity(const std::vector<int>& v)
 {
   if (v.empty()) return 0;
@@ -129,17 +100,16 @@ BigInteger ribi::Newick::CalcNumOfCombinationsBinary(const std::vector<int>& v) 
 
   //Get all positives
   std::vector<BigInteger> positives;
-  Copy_if(
-    v.begin(),v.end(),
+  std::copy_if(
+    std::begin(v),std::end(v),
     std::back_inserter(positives),
-    std::bind2nd(std::greater<BigInteger>(),0));
+    std::bind2nd(std::greater<BigInteger>(),0)
+  );
 
   //Obtain numerator = (SUM(x))!
   const int sum_values = Accumulate_if(v.begin(),v.end(),0,std::bind2nd(std::greater<int>(),0));
 
-  //std::clog << "sum_values:" << sum_values << '\n';
   BigInteger numerator = FactorialBigInt(sum_values);
-  //std::clog << "Numerator:" << numerator << '\n';
 
   //Obtain factorialated positives
   BigInteger denominator = 1;
@@ -148,7 +118,6 @@ BigInteger ribi::Newick::CalcNumOfCombinationsBinary(const std::vector<int>& v) 
     if (i<=0) continue;
     const BigInteger i_temp = FactorialBigInt(i);
     denominator*=i_temp;
-    //std::clog << "Denominator:" << denominator << '\n';
   }
 
   //Obtain number_of_symmetries
@@ -158,7 +127,6 @@ BigInteger ribi::Newick::CalcNumOfCombinationsBinary(const std::vector<int>& v) 
   for(BigInteger i=0; i!=number_of_symmetries; ++i)
   {
     denominator*=2;
-    //std::clog << "Denominator:" << denominator << '\n';
   }
 
   //Return the division
@@ -280,12 +248,6 @@ double ribi::Newick::CalcProbabilitySimpleNewick(
 
 void ribi::Newick::CheckNewick(const std::string& s) const
 {
-  #ifndef NDEBUG
-  //std::clog
-  //  << "Researching Newick string: '"
-  //  << s << "'\n";
-  #endif
-
   if (s.size()<3)
     throw std::invalid_argument(
       "The Newick std::string must have a size of at least three characters");
@@ -327,12 +289,6 @@ void ribi::Newick::CheckNewick(const std::string& s) const
   std::string s_copy = s;
   while(s_copy.size()>2) //Find a leaf and cut it until the string is empty
   {
-    #ifndef NDEBUG
-    //std::clog
-    //  << "Researching Newick string leaf: '"
-    //  << s_copy
-    //  << "'\n";
-    #endif
     //Find a leaf
     //Find index i (starting opening bracket) and j (closing bracket)
     const std::size_t sz = s_copy.size();
@@ -447,11 +403,6 @@ void ribi::Newick::CheckNewick(const std::vector<int>& v) const
   std::vector<int> v_copy = v;
   while(v_copy.size()>2) //Find a leaf and cut it until the string is empty
   {
-    #ifndef NDEBUG
-    //std::clog << "Researching leaf: '";
-    //std::copy(v_copy.begin(),v_copy.end(),std::ostream_iterator<int>(std::clog," "));
-    //std::clog << "'\n";
-    #endif
     //Find a leaf
     //Find index i (starting opening bracket) and j (closing bracket)
     const std::size_t sz = v_copy.size();
@@ -674,42 +625,7 @@ std::vector<std::string> ribi::Newick::CreateValidBinaryNewicks() noexcept
 
 std::vector<std::string> ribi::Newick::CreateValidTrinaryNewicks() noexcept
 {
-  //#ifdef __GXX_EXPERIMENTAL_CXX0X__
-  ///\note
-  ///The tests below must be put back in again once
-  #ifdef DEBUG_TEMP_REMOVE_2738236826438
-  return
-    {
-      "(1,1,1)",
-      "(1,2,3)",
-      "((1,1),1,1)",
-      "(1,(1,1),1)",
-      "(1,1,(1,1))",
-      "(1,(2,3,4))",
-      "(1,2,(3,4))",
-      "(1,2,(3,4,5))",
-      "((1,2,3),4,5)",
-      "(11,22,33)",
-      "(11,(22,33,44))",
-      "(11,22,(33,44))",
-      "(11,22,(33,44,55))",
-      "((11,22,33),44,55)",
-      "((1,2),(3,4),(5,6))",
-      "((1,2,3),(4,5),(6,7))",
-      "((1,2),(3,4,5),(6,7))",
-      "((1,2),(3,4),(5,6,7))",
-      "((1,2,3),(4,5),(6,7))",
-      "((1,2),(3,4,5),(6,7))",
-      "((1,2),(3,4),(5,6,7))",
-      "((1,2,3),(4,5,6),(7,8))",
-      "((1,2),(3,4,5),(6,7,8))",
-      "((1,2,3),(4,5),(6,7,8))",
-      "((1,2,3),(4,5,6),(7,8,9))",
-      "((11,22,33),(44,55,66),(77,88,99))"
-    };
-  #else
-    return NewickCpp98().CreateValidTrinaryNewicks();
-  #endif
+  return NewickCpp98().CreateValidTrinaryNewicks();
 }
 
 std::vector<std::string> ribi::Newick::CreateValidNewicks() noexcept
@@ -790,7 +706,6 @@ std::vector<int> ribi::Newick::Factorial(const std::vector<int>& v_original) noe
   std::vector<int> v(v_original);
   std::transform(v.begin(),v.end(),v.begin(),
     [](const int i) { return Newick().Factorial(i); }
-    //std::ptr_fun<int,int>(Factorial)
   );
   return v;
 }
@@ -858,166 +773,14 @@ std::vector<int> ribi::Newick::GetFactorialTerms(const int n) noexcept
 {
   assert(n > 0);
   std::vector<int> v(n);
-
   std::iota(std::begin(v), std::end(v), 1);
-  //std::for_each(v.begin(), v.end(),Increase(1));
-
-  assert(std::count(v.begin(),v.end(),0)==0);
+  assert(std::count(v.begin(),v.end(),0) == 0);
   return v;
 }
 
 std::vector<boost::tuple<std::string,double,double> > ribi::Newick::GetKnownProbabilities() noexcept
 {
-  //#ifdef __GXX_EXPERIMENTAL_CXX0X__
-  ///\note
-  ///The tests below must be put back in again once
-  #ifdef DEBUG_TEMP_REMOVE_2738236826438
-  const std::vector<boost::tuple<std::string,double,double> > v
-    = {
-    //Sum equals 1
-    { "(1)"  , 10.0, 1.0000000 },
-    //Sum equals 2
-    { "(2)"  , 10.0, 0.0909091 },
-    { "(1,1)", 10.0, 0.9090909 },
-    //Sum equals 3
-    { "(3)"      , 10.0, 0.0151515 },
-    { "(1,2)"    , 10.0, 0.0757576 },
-    { "(2,1)"    , 10.0, 0.0757576 },
-    { "(1,(1,1))", 10.0, 0.2525253 },
-    { "((1,1),1)", 10.0, 0.2525253 },
-    //Trinary
-    { "(1,1,1)"  , 10.0, 0.7575758 },
-    //Sum equals 4
-    { "(4)"      , 10.0, 0.0034965 },
-    { "(1,3)"    , 10.0, 0.0116550 },
-    { "(2,2)"    , 10.0, 0.0058275 },
-    { "(3,1)"    , 10.0, 0.0116550 },
-    { "(1,(1,2))", 10.0, 0.0194250 },
-    { "(1,(2,1))", 10.0, 0.0194250 },
-    { "(2,(1,1))", 10.0, 0.0194250 },
-    { "((1,2),1)", 10.0, 0.0194250 },
-    { "((2,1),1)", 10.0, 0.0194250 },
-    { "((1,1),2)", 10.0, 0.0194250 },
-    //Trinary
-    { "(1,1,2)"    , 10.0, 0.0582751 },
-    { "(1,2,1)"    , 10.0, 0.0582751 },
-    { "(2,1,1)"    , 10.0, 0.0582751 },
-    { "(1,1,(1,1))", 10.0, 0.1295001 }, //(1)(confirmed)
-    { "(1,(1,1),1)", 10.0, 0.1295001 },
-    { "((1,1),1,1)", 10.0, 0.1295001 },
-    { "(1,(1,1,1))", 10.0, 0.0971251 }, //(2)(confirmed)
-    { "((1,1,1),1)", 10.0, 0.0971251 },
-    //Quadrary
-    { "(1,1,1,1)", 10.0, 0.5827505 },
-    //Sum equals 5
-    { "(1,4)"        , 10.0, 0.0024975 },
-    { "(2,3)"        , 10.0, 0.0008325 },
-    { "(3,2)"        , 10.0, 0.0008325 },
-    { "(4,1)"        , 10.0, 0.0024975 },
-    { "(1,(1,3))"    , 10.0, 0.0028305 },
-    { "(1,(2,2))"    , 10.0, 0.0012950 },
-    { "(1,(3,1))"    , 10.0, 0.0028305 },
-    { "(2,(1,2))"    , 10.0, 0.0014338 },
-    { "(2,(2,1))"    , 10.0, 0.0014338 },
-    { "(3,(1,1))"    , 10.0, 0.0026640 },
-    //Trinary
-    { "(1,1,(1,2))"  , 10.0, 0.0092731 }, //(3)(confirmed)
-    { "(1,1,(2,1))"  , 10.0, 0.0092731 },
-    { "(1,1,(1,1,1))", 10.0, 0.0348263 }, //(4)(confirmed)
-    { "(1,(1,1,1),1)", 10.0, 0.0348263 },
-    { "((1,1,1),1,1)", 10.0, 0.0348263 },
-    { "(2,(1,1,1))"  , 10.0, 0.0070069 }, //(5)(confirmed)
-    { "((1,1,1),2)"  , 10.0, 0.0070069 },
-    { "(1,1,1,(1,1))", 10.0, 0.0692918 }, //(6)(confirmed)
-    { "(1,2,(1,1))"  , 10.0, 0.0092223 }, //(7)(confirmed)
-    { "(2,1,(1,1))"  , 10.0, 0.0092223 },
-    { "(1,(1,1),2)"  , 10.0, 0.0092223 },
-    { "(2,(1,1),1)"  , 10.0, 0.0092223 },
-    { "((1,1),1,2)"  , 10.0, 0.0092223 },
-    { "((1,1),2,1)"  , 10.0, 0.0092223 },
-    { "(1,(1,1,2))"  , 10.0, 0.0069190 }, //(9)(confirmed)
-    { "(1,(1,2,1))"  , 10.0, 0.0069190 },
-    { "(1,(2,1,1))"  , 10.0, 0.0069190 },
-    { "((1,1,2),1)"  , 10.0, 0.0069190 },
-    { "((1,2,1),1)"  , 10.0, 0.0069190 },
-    { "((2,1,1),1)"  , 10.0, 0.0069190 },
-    //Quadrary
-    { "(1,(1,1,1,1))", 10.0, 0.0415140 }, //(8)(confirmed)
-    //Pentary
-    { "(1,1,1,1,1)"  , 10.0, 0.4162504 },
-    //Sum equals 6
-    { "(1,5)"        , 10.0, 0.0006660 },
-    { "(2,4)"        , 10.0, 0.0001665 },
-    { "(3,3)"        , 10.0, 0.0001110 },
-    { "(1,(1,4))"    , 10.0, 0.0005804 },
-    { "(1,(2,3))"    , 10.0, 0.0001679 },
-    { "(1,(3,2))"    , 10.0, 0.0001679 },
-    { "(1,(4,1))"    , 10.0, 0.0005804 },
-    { "(2,(1,3))"    , 10.0, 0.0001991 },
-    { "(2,(2,2))"    , 10.0, 0.0000925 },
-    { "(2,(3,1))"    , 10.0, 0.0001991 },
-    { "(3,(1,2))"    , 10.0, 0.0001880 },
-    { "(3,(2,1))"    , 10.0, 0.0001880 },
-    { "(4,(1,1))"    , 10.0, 0.0005043 },
-    //Trinary
-    { "(1,1,(1,3))"  , 10.0, 0.0012712 },
-    { "(1,1,(2,2))"  , 10.0, 0.0005563 },
-    { "(1,1,(3,1))"  , 10.0, 0.0012712 },
-    { "(1,(1,3),1)"  , 10.0, 0.0012712 },
-    { "(1,(2,2),1)"  , 10.0, 0.0005563 },
-    { "(1,(3,1),1)"  , 10.0, 0.0012712 },
-    { "((1,3),1,1)"  , 10.0, 0.0012712 },
-    { "((2,2),1,1)"  , 10.0, 0.0005563 },
-    { "((3,1),1,1)"  , 10.0, 0.0012712 },
-    { "(1,2,(1,2))"  , 10.0, 0.0006346 },
-    { "(2,1,(1,2))"  , 10.0, 0.0006346 },
-    { "(1,2,(2,1))"  , 10.0, 0.0006346 },
-    { "(2,1,(2,1))"  , 10.0, 0.0006346 },
-    { "(1,(2,1),2)"  , 10.0, 0.0006346 },
-    { "(1,(1,2),2)"  , 10.0, 0.0006346 },
-    { "(2,(2,1),1)"  , 10.0, 0.0006346 },
-    { "(2,(1,2),1)"  , 10.0, 0.0006346 },
-    { "(1,3,(1,1))"  , 10.0, 0.0011913 },
-    { "(1,(1,1),3)"  , 10.0, 0.0011913 },
-    { "((1,1),1,3)"  , 10.0, 0.0011913 },
-    { "(3,(1,1),1)"  , 10.0, 0.0011913 },
-    { "((1,1),3,1)"  , 10.0, 0.0011913 },
-    { "(1,1,(1,1,2))", 10.0, 0.0023165 },
-    { "(1,1,(1,2,1))", 10.0, 0.0023165 },
-    { "(1,1,(2,1,1))", 10.0, 0.0023165 },
-    { "(1,(1,1,2),1)", 10.0, 0.0023165 },
-    { "(1,(1,2,1),1)", 10.0, 0.0023165 },
-    { "(1,(2,1,1),1)", 10.0, 0.0023165 },
-    { "((1,1,2),1,1)", 10.0, 0.0023165 },
-    { "((1,2,1),1,1)", 10.0, 0.0023165 },
-    { "((2,1,1),1,1)", 10.0, 0.0023165 },
-    { "(1,2,(1,1,1))", 10.0, 0.0023323 },
-    { "(2,1,(1,1,1))", 10.0, 0.0023323 },
-    { "(1,(1,1,1),2)", 10.0, 0.0023323 },
-    { "(2,(1,1,1),1)", 10.0, 0.0023323 },
-    { "((1,1,1),1,2)", 10.0, 0.0023323 },
-    { "((1,1,1),2,1)", 10.0, 0.0023323 },
-    //Quadrary
-    { "(1,(1,1,1,2))"  , 10.0, 0.0027574 },
-    { "(1,(1,1,2,1))"  , 10.0, 0.0027574 },
-    { "(1,(1,2,1,1))"  , 10.0, 0.0027574 },
-    { "(1,(2,1,1,1))"  , 10.0, 0.0027574 },
-    { "((1,1,1,2),1)"  , 10.0, 0.0027574 },
-    { "((1,1,2,1),1)"  , 10.0, 0.0027574 },
-    { "((1,2,1,1),1)"  , 10.0, 0.0027574 },
-    { "((2,1,1,1),1)"  , 10.0, 0.0027574 },
-    { "(2,(1,1,1,1))"  , 10.0, 0.0028154 },
-    { "((1,1,1,1),2)"  , 10.0, 0.0028154 },
-    //Pentary
-    { "(1,(1,1,1,1,1))", 10.0, 0.0183824 }, //(7)
-    { "((1,1,1,1,1),1)", 10.0, 0.0183824 },
-    //Hexary
-    { "(1,1,1,1,1,1)"  , 10.0, 0.2775003 }
-  };
-  return v;
-  #else
-    return NewickCpp98().GetKnownProbabilities();
-  #endif
+  return NewickCpp98().GetKnownProbabilities();
 }
 
 int ribi::Newick::GetLeafMaxArity(const std::vector<int>& n) const noexcept
@@ -1048,78 +811,7 @@ int ribi::Newick::GetLeafMaxArity(const std::vector<int>& n) const noexcept
 std::vector<std::vector<int> >
   ribi::Newick::GetRootBranches(const std::vector<int>& n) noexcept
 {
-  //#ifdef __GXX_EXPERIMENTAL_CXX0X__
-  ///\note
-  ///The tests below must be put back in again once
-  #ifdef DEBUG_TEMP_REMOVE_2738236826438
-
-  //#define DEBUG_GETROOTBRANCHES
-  #ifdef  DEBUG_GETROOTBRANCHES
-  TRACE_FUNC();
-  TRACE(Newick::NewickToString(n));
-  #endif
-
-  assert(IsNewick(n));
-  assert(!IsUnaryNewick(n));
-
-  const int size = boost::numeric_cast<int>(n.size());
-  std::vector<std::vector<int> > v;
-
-  if (IsSimple(n))
-  {
-    for (int i=1; i!=size-1; ++i) //Skip brackets
-    {
-      v.push_back(
-        CreateVector(
-          static_cast<int>(bracket_open),
-          n[i],
-          static_cast<int>(bracket_close)));
-    }
-    assert(IsNewick(v.back()));
-    assert(v.size() > 1);
-    return v;
-  }
-  //Complex newick
-  assert(!IsSimple(n));
-  const std::vector<int> depth = GetDepth(n);
-
-  assert(depth.size() == n.size());
-  //Search for open and closing brackets in depth 1
-  for (int i=0; i!=size; ++i)
-  {
-    if (depth[i] == 0 && n[i] > 0)
-    {
-      //C++0x initialization list
-      v.push_back(
-        {
-          Newick::bracket_open,
-          n[i],
-          Newick::bracket_close
-        }
-      );
-      assert(Newick::IsNewick(v.back()));
-      continue;
-    }
-    if (depth[i] != 1 || n[i]!=Newick::bracket_open) continue;
-    for (int j=i+1; j!=size; ++j)
-    {
-      if (depth[j] != 1 || n[j]!=Newick::bracket_close) continue;
-      std::vector<int> w;
-      w.push_back(Newick::bracket_open);
-      std::copy(n.begin() + i + 1,n.begin() + j,std::back_inserter(w));
-      w.push_back(Newick::bracket_close);
-      assert(IsNewick(w));
-      v.push_back(w);
-      //Set from index i after current end
-      i = j;
-      break;
-    }
-  }
-  assert(v.size() > 1);
-  return v;
-  #else
   return NewickCpp98().GetRootBranches(n);
-  #endif
 }
 
 std::pair<std::vector<int>,std::vector<int> >
@@ -1163,17 +855,12 @@ std::pair<std::vector<int>,std::vector<int> >
     {
       rhs = Surround(rhs);
     }
-    //std::clog
-    //  << NewickToString(lhs)
-    //  << " and "
-    //  << NewickToString(rhs)
-    //  << '\n';
     if (IsNewick(lhs) && IsNewick(rhs))
     {
       return std::make_pair(lhs,rhs);
     }
   }
-  assert(!"Should not get here");
+  assert(!"Should not get here"); //!OCLINT
   throw std::logic_error("Should not get here");
 }
 
@@ -1399,117 +1086,7 @@ std::vector<std::vector<int> >
 std::vector<std::pair<std::vector<int>,int> >
   ribi::Newick::GetSimplerNewicksFrequencyPairs(const std::vector<int>& n) noexcept
 {
-  //#ifdef __GXX_EXPERIMENTAL_CXX0X__
-  #ifdef DEBUG_TEMP_REMOVE_2738236826438
-
-  //#define DEBUG_GETSIMPLERNEWICKSFREQUENCYPAIRS
-  assert(IsNewick(n));
-
-  std::vector<std::pair<std::vector<int>,int> > newicks;
-  const std::vector<int> depths = GetDepth(n);
-
-
-  const int size = boost::numeric_cast<int>(n.size());
-  for (int i = 0; i!=size; ++i)
-  {
-    assert(i >= 0);
-    assert(i < size);
-    if (n[i] < 1) continue;
-    assert(n[i] > 0);
-    if (n[i] > 1)
-    {
-      std::vector<int> new_newick(n);
-      --new_newick[i];
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string stored = Newick::NewickToString(new_newick);
-        TRACE(stored);
-      }
-      #endif
-      newicks.push_back( { new_newick,n[i] } );
-      continue;
-    }
-    assert(n[i] == 1); //Most difficult...
-    const int depth = depths[i];
-    //j must first decrement, later increment with the same code
-    int j_end  = -1;
-    int j_step = -1;
-    for (int j=i-1; ; j+=j_step)
-    {
-      //j must first decrement, later increment with the same code
-      if (j == j_end
-        //|| depths[j] < depth
-        || (depths[j] == depth && n[j] < 0))
-      {
-        if (j_step == -1)
-        {
-          j = i + 1;
-          j_end = size;
-          j_step = 1;
-        }
-        else
-        {
-          break;
-        }
-      }
-      assert(i!=j);
-      assert(j >= 0);
-      assert(j < size);
-      //Only take frequencies of the same depth into account
-      if (n[j] < 1 || depths[j] != depth) continue;
-      std::vector<int> new_newick_with_zero(n);
-      --new_newick_with_zero[i];
-      assert(new_newick_with_zero[i] == 0);
-      ++new_newick_with_zero[j];
-      //Remove brackets after possibly lonely value
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string newick_str_with_zeroes = Newick::DumbNewickToString(new_newick_with_zero);
-        TRACE(newick_str_with_zeroes);
-        const std::string dist_i_j = boost::lexical_cast<std::string>(std::abs(i - j));
-        TRACE(dist_i_j)
-      }
-      #endif
-      //If there is only one or two values between
-      //the brackets, and one of these values was a
-      //1 becoming added to the other, nullify the
-      //1 and both brackets:
-      //'((1,1),2)' -> '(00102)' -> '(1,2)'
-      if (std::abs(i - j) == 1)
-        //|| (std::abs(i - j) == 2 && n[i] == 1))
-      {
-        const int index_bracket_open  = std::min(i,j) - 1;
-        const int index_bracket_close = std::max(i,j) + 1;
-        if ( new_newick_with_zero[index_bracket_open]  == Newick::bracket_open
-          && new_newick_with_zero[index_bracket_close] == Newick::bracket_close)
-        {
-          new_newick_with_zero[index_bracket_open]  = 0;
-          new_newick_with_zero[index_bracket_close] = 0;
-        }
-      }
-      //Remove decremented i and possibly nullified brackets
-      std::vector<int> new_newick;
-      std::remove_copy(
-        new_newick_with_zero.begin(),
-        new_newick_with_zero.end(),
-        std::back_inserter(new_newick),
-        0);
-      //Add brackets if these are removed
-      if (new_newick.front() != Newick::bracket_open
-        || new_newick.back() != Newick::bracket_close)
-      {
-        new_newick = Surround(new_newick);
-      }
-      assert(IsNewick(new_newick));
-      newicks.push_back( { new_newick, 1 } );
-      continue;
-    }
-  }
-
-  return newicks;
-  #else
   return NewickCpp98().GetSimplerNewicksFrequencyPairs(n);
-  #endif
 }
 
 
@@ -1800,54 +1377,11 @@ std::string ribi::Newick::NewickToString(const std::vector<int>& v) const
     }
     else
     {
-      assert(!"Should not get here"
-        && "A std::vector<int> Newick must consist of brackets and values only");
+      assert(!"A std::vector<int> Newick must consist of brackets and values only"); //!OCLINT
     }
   }
   return s;
 }
-
-///SortNewick orders a Newick is such a way
-///that all opening brackets are at the left side.
-///For example (1,(2,3)) becomes ((2,3),1)
-/*
-std::string SortNewick(const std::string& newick)
-{
-  assert(IsNewick(newick));
-  //All leaves are 'cut' by replacing them with an x
-  std::string s = newick;
-  std::string n = "";
-  //Find initial leaf and replace it with x
-  {
-    const boost::xpressive::sregex r("\\(\\d+,\\d+\\)");
-    std::string::const_iterator start = s.begin();
-    const std::string::const_iterator end = s.end();
-    boost::match_results<std::string::const_iterator> what;
-    boost::regex_search(start, end, what, r);
-    n = what.str();
-    s = boost::regex_replace(s,r,"x");
-  }
-  //When all leaves are cut, s == 'x'
-  while (s!="x")
-  {
-    //Obtain leaf with x
-    const boost::xpressive::sregex r("(\\(x,\\d+\\))|(\\(\\d+,x\\))");
-    std::string::const_iterator start = s.begin();
-    const std::string::const_iterator end = s.end();
-    boost::match_results<std::string::const_iterator> what;
-    //Search for inner leaf
-    boost::regex_search(start, end, what, r);
-    const std::string l = what.str();
-    //Search leaf for digit
-    boost::regex_search(l.begin(), l.end(), what,boost::regex("\\d+"));
-    //Add digit to n
-    n = "(" + n + "," + what.str() + ")";
-    //Replace the leaf by an x
-    s = boost::regex_replace(s,r,"x");
-  }
-  return n;
-}
-*/
 
 std::vector<int> ribi::Newick::ReplaceLeave(
   const std::vector<int>& newick,
@@ -1877,7 +1411,7 @@ std::vector<int> ribi::Newick::ReplaceLeave(
       }
     }
   }
-  assert(!"Should not get here");
+  assert(!"Should not get here"); //!OCLINT
   throw std::logic_error("Should not get here");
 }
 
