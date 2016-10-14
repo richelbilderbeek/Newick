@@ -76,6 +76,7 @@ Out Copy_if(In first, In last, Out res, Pred Pr)
 }
 
 //From http://www.richelbilderbeek.nl/CppFunctorIncrease.htm
+/*
 struct Increase
 {
   explicit Increase(const int& init_value = 0) noexcept : m_value(init_value) {}
@@ -87,6 +88,7 @@ struct Increase
   private:
   int m_value;
 };
+*/
 
 BigInteger ribi::Newick::CalcComplexity(const std::vector<int>& v)
 {
@@ -115,12 +117,10 @@ double ribi::Newick::CalcDenominator(const std::vector<int>& v,const double thet
     if (i > 0) sum_above_zero+= i;
     if (i > 1) sum_above_one += i;
   }
-  const double d
-    = boost::numeric_cast<double>(
+  return boost::numeric_cast<double>(
       sum_above_zero * (sum_above_zero - 1))
-    + (boost::numeric_cast<double>(sum_above_one)
-       * theta);
-  return d;
+    + (boost::numeric_cast<double>(sum_above_one) * theta)
+  ;
 }
 
 BigInteger ribi::Newick::CalcNumOfCombinationsBinary(const std::vector<int>& v) const
@@ -195,7 +195,7 @@ BigInteger ribi::Newick::CalcNumOfSymmetriesBinary(std::vector<int> v) const
       if (v[i] > 0 && v[i]==v[i+1]) ++n_symmetries;
     }
     //Collect all leaves and store new leaves
-    std::vector<std::pair<int,int> > leaves;
+    //std::vector<std::pair<int,int>> leaves;
     for (std::size_t i = 0; i!=j; ++i)
     {
       if (v[i] > 0 && v[i+1] > 0)
@@ -239,7 +239,6 @@ BigInteger ribi::Newick::CalcNumOfSymmetriesBinary(std::vector<int> v) const
         {
           //Check if the last (X,Y) is symmetrical...
           return n_symmetries + (v[1] > 0 && v[1]==v[2] ? 1 : 0);
-          break;
         }
       }
     }
@@ -859,7 +858,10 @@ std::vector<int> ribi::Newick::GetFactorialTerms(const int n) noexcept
 {
   assert(n > 0);
   std::vector<int> v(n);
-  std::for_each(v.begin(), v.end(),Increase(1));
+
+  std::iota(std::begin(v), std::end(v), 1);
+  //std::for_each(v.begin(), v.end(),Increase(1));
+
   assert(std::count(v.begin(),v.end(),0)==0);
   return v;
 }
@@ -1320,12 +1322,6 @@ std::vector<std::vector<int> >
     {
       std::vector<int> new_newick(n);
       --new_newick[i];
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string stored = Newick::NewickToString(new_newick);
-        TRACE(stored);
-      }
-      #endif
       newicks.push_back(new_newick);
       continue;
     }
@@ -1362,14 +1358,6 @@ std::vector<std::vector<int> >
       assert(new_newick_with_zero[i] == 0);
       ++new_newick_with_zero[j];
       //Remove brackets after possibly lonely value
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string newick_str_with_zeroes = Newick::DumbNewickToString(new_newick_with_zero);
-        TRACE(newick_str_with_zeroes);
-        const std::string dist_i_j = boost::lexical_cast<std::string>(std::abs(i - j));
-        TRACE(dist_i_j)
-      }
-      #endif
       //If there is only one or two values between
       //the brackets, and one of these values was a
       //1 becoming added to the other, nullify the
@@ -1387,12 +1375,6 @@ std::vector<std::vector<int> >
           new_newick_with_zero[index_bracket_close] = 0;
         }
       }
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string newick_str_with_more_zeroes = Newick::DumbNewickToString(new_newick_with_zero);
-        TRACE(newick_str_with_more_zeroes);
-      }
-      #endif
       //Remove decremented i and possibly nullified brackets
       std::vector<int> new_newick;
       std::remove_copy(
@@ -1505,12 +1487,6 @@ std::vector<std::pair<std::vector<int>,int> >
           new_newick_with_zero[index_bracket_close] = 0;
         }
       }
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string newick_str_with_more_zeroes = Newick::DumbNewickToString(new_newick_with_zero);
-        TRACE(newick_str_with_more_zeroes);
-      }
-      #endif
       //Remove decremented i and possibly nullified brackets
       std::vector<int> new_newick;
       std::remove_copy(
@@ -1524,20 +1500,6 @@ std::vector<std::pair<std::vector<int>,int> >
       {
         new_newick = Surround(new_newick);
       }
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string newick_str_done = Newick::DumbNewickToString(new_newick);
-        TRACE(newick_str_done);
-      }
-      #endif
-      #define DEBUG_2436964926435498753298216832187
-      #ifdef  DEBUG_2436964926435498753298216832187
-      if (!IsNewick(new_newick))
-      {
-        TRACE(Newick::DumbNewickToString(new_newick));
-      }
-      #endif
-
       assert(IsNewick(new_newick));
       newicks.push_back( { new_newick, 1 } );
       continue;
@@ -1712,7 +1674,7 @@ bool ribi::Newick::IsNewick(const std::string& s) const noexcept
   {
     CheckNewick(s);
   }
-  catch (const std::exception& e)
+  catch (const std::exception&)
   {
     return false;
   }
