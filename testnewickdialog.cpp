@@ -183,7 +183,7 @@ void ribi::TestNewickDialog::DoCalculate(
   }
 }
 
-const std::vector<double> ribi::TestNewickDialog::ExtractProbabilities(
+std::vector<double> ribi::ExtractProbabilities(
   const std::vector<TestNewickResult>& v)
 {
   std::vector<double> w;
@@ -194,7 +194,7 @@ const std::vector<double> ribi::TestNewickDialog::ExtractProbabilities(
   return w;
 }
 
-const ribi::About ribi::TestNewickDialog::GetAbout()
+ribi::About ribi::GetTestNewickAbout() noexcept
 {
   About about(
     "Richel Bilderbeek",
@@ -203,8 +203,8 @@ const ribi::About ribi::TestNewickDialog::GetAbout()
     "the 24th of March 2011",
     "2010-2015",
     "http://www.richelbilderbeek.nl/ToolTestNewick.htm",
-    GetVersion(),
-    GetVersionHistory());
+    GetTestNewickVersion(),
+    GetTestNewickVersionHistory());
   about.AddLibrary("BigInt: version 2010.04.30");
   about.AddLibrary("BinaryNewickVector: version " + BinaryNewickVector::GetVersion());
   about.AddLibrary("NewickVector: version " + NewickVector::GetVersion());
@@ -213,12 +213,12 @@ const ribi::About ribi::TestNewickDialog::GetAbout()
   return about;
 }
 
-const std::string ribi::TestNewickDialog::GetVersion()
+std::string ribi::GetTestNewickVersion() noexcept
 {
   return "2.4";
 }
 
-const std::vector<std::string> ribi::TestNewickDialog::GetVersionHistory()
+std::vector<std::string> ribi::GetTestNewickVersionHistory() noexcept
 {
   return {
     "2011-03-06: version 2.1: initial version, same versioning as QtTestNewickDialog",
@@ -229,18 +229,18 @@ const std::vector<std::string> ribi::TestNewickDialog::GetVersionHistory()
 }
 
 //From http://www.richelbilderbeek.nl/CppGetRandomUniform.htm
-double ribi::TestNewickDialog::GetRandomUniform()
+double ribi::GetRandomUniform() noexcept
 {
   return static_cast<double>(std::rand())/static_cast<double>(RAND_MAX);
 }
 
 //From http://www.richelbilderbeek.nl/CppRandomizeTimer.htm
-void ribi::TestNewickDialog::RandomizeTimer()
+void ribi::RandomizeTimer() noexcept
 {
   std::srand(std::time(0));
 }
 
-const std::vector<std::string> ribi::TestNewickDialog::GetHardBiologicalBinaryNewicks()
+std::vector<std::string> ribi::GetHardBiologicalBinaryNewicks() noexcept
 {
   std::vector<std::string> v;
   v.push_back("((1,(1,(((((1,(1,((1,1),(3,1)))),1),((((1,((1,((1,1),(45,6))),(((1,1),(4,1)),2))),1),2),1)),1),2))),(1,1))");
@@ -346,7 +346,7 @@ const std::vector<std::string> ribi::TestNewickDialog::GetHardBiologicalBinaryNe
   return v;
 }
 
-const std::vector<std::string> ribi::TestNewickDialog::GetHardBinaryNewicks()
+std::vector<std::string> ribi::GetHardBinaryNewicks() noexcept
 {
   std::vector<std::string> v;
   v.push_back("((4,4),4)");
@@ -367,7 +367,7 @@ const std::vector<std::string> ribi::TestNewickDialog::GetHardBinaryNewicks()
   return v;
 }
 
-const std::vector<std::string> ribi::TestNewickDialog::GetLightBiologicalBinaryNewicks()
+std::vector<std::string> ribi::GetLightBiologicalBinaryNewicks() noexcept
 {
   std::vector<std::string> v;
   v.push_back("((1,(1,((((((1,1),(1,1)),1),((((1,((1,(1,(10,3))),((3,2),1))),1),2),1)),1),1))),1)");
@@ -473,7 +473,7 @@ const std::vector<std::string> ribi::TestNewickDialog::GetLightBiologicalBinaryN
   return v;
 }
 
-const std::vector<std::string> ribi::TestNewickDialog::GetLightBinaryNewicks()
+std::vector<std::string> ribi::GetLightBinaryNewicks() noexcept
 {
   std::vector<std::string> v;
   v.push_back("((2,2),2)");
@@ -493,7 +493,7 @@ const std::vector<std::string> ribi::TestNewickDialog::GetLightBinaryNewicks()
   return v;
 }
 
-const std::vector<std::string> ribi::TestNewickDialog::GetLightTrinaryNewicks()
+std::vector<std::string> ribi::GetLightTrinaryNewicks() noexcept
 {
   std::vector<std::string> v;
   //Trinarity in leaf
@@ -570,7 +570,7 @@ const std::vector<std::string> ribi::TestNewickDialog::GetLightTrinaryNewicks()
   return v;
 }
 
-const std::vector<std::string> ribi::TestNewickDialog::GetManyBinaryNewicks()
+std::vector<std::string> ribi::GetManyBinaryNewicks() noexcept
 {
   std::vector<std::string> v;
   v.push_back("((90,1000),100)");
@@ -707,7 +707,7 @@ const std::vector<std::string> ribi::TestNewickDialog::GetManyBinaryNewicks()
   return v;
 }
 
-const std::vector<std::string> ribi::TestNewickDialog::GetMediumBinaryNewicks()
+std::vector<std::string> ribi::GetMediumBinaryNewicks() noexcept
 {
   std::vector<std::string> v;
   v.push_back("((3,3),3)");

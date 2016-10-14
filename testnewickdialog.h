@@ -21,7 +21,7 @@ namespace ribi {
 struct TestNewickDialog
 {
   typedef std::vector<TestNewickResult> TableType;
-  TestNewickDialog(const int types = 63);
+  explicit TestNewickDialog(const int types = 63);
   void DoAutoCalculate(
     const std::string& newick_str,
     const std::string& theta_str,
@@ -35,10 +35,6 @@ struct TestNewickDialog
     const double theta
   );
 
-  static const About GetAbout();
-  static const std::vector<std::string> GetVersionHistory();
-  static const std::string GetVersion();
-
   const std::string& GetText() const { return m_text; }
   const TableType& GetTable() const { return m_table; }
 
@@ -51,22 +47,27 @@ struct TestNewickDialog
   std::string m_text;
   //The types of classes/algorithms used
   const int m_types;
-
-
-  static double GetRandomUniform();
-  static void RandomizeTimer();
-  static const std::vector<double> ExtractProbabilities(
-    const std::vector<TestNewickResult>& v);
-
-  static const std::vector<std::string> GetHardBiologicalBinaryNewicks();
-  static const std::vector<std::string> GetHardBinaryNewicks();
-  static const std::vector<std::string> GetLightBiologicalBinaryNewicks();
-  static const std::vector<std::string> GetLightBinaryNewicks();
-  static const std::vector<std::string> GetLightTrinaryNewicks();
-  static const std::vector<std::string> GetMediumBinaryNewicks();
-  static const std::vector<std::string> GetManyBinaryNewicks();
-
 };
+
+std::vector<double> ExtractProbabilities(
+  const std::vector<TestNewickResult>& v
+);
+
+double GetRandomUniform() noexcept;
+
+About GetTestNewickAbout() noexcept;
+std::vector<std::string> GetTestNewickVersionHistory() noexcept;
+std::string GetTestNewickVersion() noexcept;
+
+std::vector<std::string> GetHardBiologicalBinaryNewicks() noexcept;
+std::vector<std::string> GetHardBinaryNewicks() noexcept;
+std::vector<std::string> GetLightBiologicalBinaryNewicks() noexcept;
+std::vector<std::string> GetLightBinaryNewicks() noexcept;
+std::vector<std::string> GetLightTrinaryNewicks() noexcept;
+std::vector<std::string> GetMediumBinaryNewicks() noexcept;
+std::vector<std::string> GetManyBinaryNewicks() noexcept;
+
+void RandomizeTimer() noexcept;
 
 } //~namespace ribi
 

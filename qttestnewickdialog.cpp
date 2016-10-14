@@ -101,7 +101,8 @@ void ribi::QtTestNewickDialog::on_button_compare_clicked()
 {
   m_dialog.DoCalculate(
     ui->edit_newick->text().toStdString(),
-    ui->edit_theta->text().toStdString());
+    ui->edit_theta->text().toStdString()
+  );
   Display();
 }
 
@@ -110,13 +111,14 @@ void ribi::QtTestNewickDialog::on_any_change()
   m_dialog.DoAutoCalculate(
     ui->edit_newick->text().toStdString(),
     ui->edit_theta->text().toStdString(),
-    ui->edit_max_complexity->text().toStdString());
+    ui->edit_max_complexity->text().toStdString()
+  );
   Display();
 }
 
 void ribi::QtTestNewickDialog::on_button_about_clicked()
 {
-  QtAboutDialog d(TestNewickDialog::GetAbout());
+  QtAboutDialog d(GetTestNewickAbout());
   d.exec();
 }
 
