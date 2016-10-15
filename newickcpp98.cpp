@@ -52,10 +52,11 @@ std::vector<std::string> ribi::NewickCpp98::CreateValidTrinaryNewicks() noexcept
   return v;
 }
 
-std::vector<boost::tuple<std::string,double,double> > ribi::NewickCpp98::GetKnownProbabilities() noexcept
+//Need space between '> >', for C++98 support
+std::vector<boost::tuple<std::string,double,double> >
+ribi::NewickCpp98::GetKnownProbabilities() noexcept
 {
   std::vector<boost::tuple<std::string,double,double> > v;
-
   //Sum equals 1
   v.push_back(boost::make_tuple("(1)"  , 10.0, 1.0000000));
   //Sum equals 2
@@ -356,12 +357,6 @@ std::vector<std::pair<std::vector<int>,int> >
           new_newick_with_zero[index_bracket_close] = 0;
         }
       }
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string newick_str_with_more_zeroes = Newick::DumbNewickToString(new_newick_with_zero);
-        TRACE(newick_str_with_more_zeroes);
-      }
-      #endif
       //Remove decremented i and possibly nullified brackets
       std::vector<int> new_newick;
       std::remove_copy(
