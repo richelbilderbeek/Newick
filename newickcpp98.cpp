@@ -53,7 +53,7 @@ std::vector<std::string> ribi::NewickCpp98::CreateValidTrinaryNewicks() noexcept
 }
 
 //Need space between '> >', for C++98 support
-std::vector<boost::tuple<std::string,double,double> >
+std::vector<boost::tuple<std::string,double,double> > //!OCLINT Yes, too long, but I do not care about C++98
 ribi::NewickCpp98::GetKnownProbabilities() noexcept
 {
   std::vector<boost::tuple<std::string,double,double> > v;
@@ -205,7 +205,7 @@ ribi::NewickCpp98::GetKnownProbabilities() noexcept
 ///(1,2,3)             -> { 1     , 2     , 3     }
 ///((1,1),(2,2),(3,3)) -> { (1,1) , (2,2) , (3,3) }
 ///From http://www.richelbilderbeek.nl/CppGetRootBranchesBinary.htm
-std::vector<std::vector<int> >
+std::vector<std::vector<int> > //!OCLINT Yes, too long, but I do not care about C++98
   ribi::NewickCpp98::GetRootBranches(const std::vector<int>& n)
 {
   assert(Newick().IsNewick(n));
@@ -259,7 +259,7 @@ std::vector<std::vector<int> >
       v.push_back(w);
       //Set from index i after current end
       i = j;
-      break;
+      break; //!OCLINT Sure, this can be avoided, but I do not care about C++98
     }
   }
   assert(v.size() > 1);
@@ -269,7 +269,7 @@ std::vector<std::vector<int> >
 ///GetSimplerNewicksFrequencyPairs creates simpler, derived Newicks from a Newick.
 ///Its simpler Newicks are identical to those created by GetSimplerNewicks.
 ///From http://www.richelbilderbeek.nl/CppGetSimplerNewicksFrequencyPairs.htm
-std::vector<std::pair<std::vector<int>,int> >
+std::vector<std::pair<std::vector<int>,int> > //!OCLINT Yes, too long, but I do not care about C++98
   ribi::NewickCpp98::GetSimplerNewicksFrequencyPairs(const std::vector<int>& n)
 {
   assert(Newick().IsNewick(n));
@@ -356,7 +356,7 @@ std::vector<std::pair<std::vector<int>,int> >
       }
       assert(Newick().IsNewick(new_newick));
       newicks.push_back(std::make_pair(new_newick, 1));
-      continue;
+      continue;  //!OCLINT Sure, this can be avoided, but I do not care about C++98
     }
   }
   return newicks;

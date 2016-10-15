@@ -1103,71 +1103,83 @@ std::vector<std::pair<std::vector<int>,int> >
 {
   assert(IsNewick(n));
   assert(IsBinaryNewick(n));
-  std::vector<std::pair<std::vector<int>,int> > v;
-
-  assert(IsNewick(n));
-  assert(IsBinaryNewick(n));
 
   //If newick is simple (by counting the number of opening brackets),
   //there are no simpler Newicks
-  if (std::count( n.begin(),n.end(),
-    static_cast<int>(bracket_open))==1)
+  if (IsSimple(n))
   {
-    //Simple newicks do not need to be simplified
-    assert(n.size()==3 || n.size() == 4);
-    assert(n[0]==bracket_open);
-    assert(n[n.size()-1]==bracket_close);
-    if (n.size() == 3)
-    {
-      if (n[1]>1)
-      {
-        std::vector<int> next(n);
-        --next[1];
-        assert(IsNewick(next));
-        v.push_back(std::make_pair(next,n[1]));
-      }
-      return v;
-    }
-    assert(n.size()==4);
-    if (n[1] == 1)
-    {
-      std::vector<int> next
-        = newick::CreateVector(
-            static_cast<int>(bracket_open),
-            n[2]+1,
-            static_cast<int>(bracket_close)
-          );
-      assert(IsNewick(next));
-      v.push_back(std::make_pair(next,1));
-    }
-    else
+    return GetSimplerBinaryNewicksFrequencyPairsSimple(n);
+  }
+  return GetSimplerBinaryNewicksFrequencyPairsComplex(n);
+}
+
+std::vector<std::pair<std::vector<int>,int> >
+  ribi::Newick::GetSimplerBinaryNewicksFrequencyPairsSimple(
+  const std::vector<int>& n) noexcept
+{
+  //Simple newicks do not need to be simplified
+  assert(IsSimple(n));
+  assert(n.size()==3 || n.size() == 4);
+  assert(n[0]==bracket_open);
+  assert(n[n.size()-1]==bracket_close);
+  std::vector<std::pair<std::vector<int>,int>> v;
+  if (n.size() == 3)
+  {
+    if (n[1]>1)
     {
       std::vector<int> next(n);
       --next[1];
       assert(IsNewick(next));
       v.push_back(std::make_pair(next,n[1]));
     }
-    if (n[2] == 1)
-    {
-      std::vector<int> next
-        = newick::CreateVector(
-            static_cast<int>(bracket_open),
-            n[1]+1,
-            static_cast<int>(bracket_close)
-          );
-      assert(IsNewick(next));
-      v.push_back(std::make_pair(next,1));
-    }
-    else
-    {
-      std::vector<int> next(n);
-      --next[2];
-      assert(IsNewick(next));
-      v.push_back(std::make_pair(next,n[2]));
-    }
     return v;
   }
+  assert(n.size()==4);
+  if (n[1] == 1)
+  {
+    std::vector<int> next
+      = newick::CreateVector(
+          static_cast<int>(bracket_open),
+          n[2]+1,
+          static_cast<int>(bracket_close)
+        );
+    assert(IsNewick(next));
+    v.push_back(std::make_pair(next,1));
+  }
+  else
+  {
+    std::vector<int> next(n);
+    --next[1];
+    assert(IsNewick(next));
+    v.push_back(std::make_pair(next,n[1]));
+  }
+  if (n[2] == 1)
+  {
+    std::vector<int> next
+      = newick::CreateVector(
+          static_cast<int>(bracket_open),
+          n[1]+1,
+          static_cast<int>(bracket_close)
+        );
+    assert(IsNewick(next));
+    v.push_back(std::make_pair(next,1));
+  }
+  else
+  {
+    std::vector<int> next(n);
+    --next[2];
+    assert(IsNewick(next));
+    v.push_back(std::make_pair(next,n[2]));
+  }
+  return v;
+}
 
+std::vector<std::pair<std::vector<int>,int> >
+  ribi::Newick::GetSimplerBinaryNewicksFrequencyPairsComplex(
+  const std::vector<int>& n) noexcept
+{
+  assert(!IsSimple(n));
+  std::vector<std::pair<std::vector<int>,int>> v;
   //newick is complex
   //Generate other Newicks and their coefficients
   const int sz = n.size();
@@ -1192,14 +1204,6 @@ std::vector<std::pair<std::vector<int>,int> >
         next.push_back(new_value);
         assert(n[i+2] < 0);
         std::copy(n.begin() + i + 3,n.end(),std::back_inserter(next));
-        #ifndef NDEBUG
-        if (!IsNewick(next))
-        {
-          std::cerr << DumbNewickToString(n)  << '\n';
-          std::cerr << DumbNewickToString(next) << '\n';
-          InspectInvalidNewick(std::cerr,next);
-        }
-        #endif
         assert(IsNewick(next));
         v.push_back(std::make_pair(next,x));
       }

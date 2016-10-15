@@ -202,10 +202,22 @@ struct Newick
 
   ///GetSimplerBinaryNewicksFrequencyPairs creates simpler, derived Newicks from a
   ///binary Newick as well as the frequency that is simplified.
-  ///From http://www.richelbilderbeek.nl/CppGetSimplerBinaryNewicksFrequencyPairs.htm
   std::vector<std::pair<std::vector<int>,int> >
     GetSimplerBinaryNewicksFrequencyPairs(
-    const std::vector<int>& n) noexcept;
+    const std::vector<int>& n
+  ) noexcept;
+
+  ///GetSimplerBinaryNewicksFrequencyPairs for a simple newick.
+  std::vector<std::pair<std::vector<int>,int> >
+    GetSimplerBinaryNewicksFrequencyPairsSimple(
+    const std::vector<int>& n
+  ) noexcept;
+
+  ///GetSimplerBinaryNewicksFrequencyPairs for a complex newick.
+  std::vector<std::pair<std::vector<int>,int> >
+    GetSimplerBinaryNewicksFrequencyPairsComplex(
+    const std::vector<int>& n
+  ) noexcept;
 
   std::string GetVersion() const noexcept;
   std::vector<std::string> GetVersionHistory() const noexcept;
