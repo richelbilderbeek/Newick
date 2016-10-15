@@ -51,7 +51,7 @@ using namespace ribi;
 BOOST_AUTO_TEST_CASE(ribi_newick_test_tests_with_newickcpp98)
 {
   //Check difference between C++98 and C++0x
-  BOOST_CHECK(ribi::Newick().CreateValidTrinaryNewicks() == NewickCpp98().CreateValidTrinaryNewicks());
+  BOOST_CHECK(ribi::newick::CreateValidTrinaryNewicks() == NewickCpp98().CreateValidTrinaryNewicks());
   BOOST_CHECK(ribi::Newick().GetKnownProbabilities() == NewickCpp98().GetKnownProbabilities());
 }
 
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(ribi_newick_str_to_vector_2)
 BOOST_AUTO_TEST_CASE(ribi_newick_well_formed_newicks_must_be_accepted)
 {
   //Check if well-formed Newicks are accepted
-  const std::vector<std::string> v = ribi::Newick().CreateValidNewicks();
+  const std::vector<std::string> v = ribi::newick::CreateValidNewicks();
   for(const std::string& s: v)
   {
     BOOST_CHECK(ribi::Newick().IsNewick(s));
@@ -278,7 +278,7 @@ BOOST_AUTO_TEST_CASE(ribi_newick_GetRootBranches)
 BOOST_AUTO_TEST_CASE(ribi_newick_GetRootBranches_cpp98_and_cpp11_must_have_same)
 {
   //Compare C++98 and C++0x version
-  const std::vector<std::string> v = ribi::Newick().CreateValidBinaryNewicks();
+  const std::vector<std::string> v = ribi::newick::CreateValidBinaryNewicks();
   for(const std::string& s: v)
   {
     const std::vector<int> n = ribi::Newick().StringToNewick(s);
@@ -290,7 +290,7 @@ BOOST_AUTO_TEST_CASE(ribi_newick_IsUnaryNewick_on_CreateValidUnaryNewicks)
 {
   //Check if unary Newicks are detected correctly
   {
-    const std::vector<std::string> v = ribi::Newick().CreateValidUnaryNewicks();
+    const std::vector<std::string> v = ribi::newick::CreateValidUnaryNewicks();
     for(const std::string& s: v)
     {
       const std::vector<int> n = ribi::Newick().StringToNewick(s);
@@ -306,7 +306,7 @@ BOOST_AUTO_TEST_CASE(ribi_newick_IsBinaryNewick_on_CreateValidBinaryNewicks)
 {
   //Check if binary Newicks are detected correctly
   {
-    const std::vector<std::string> v = ribi::Newick().CreateValidBinaryNewicks();
+    const std::vector<std::string> v = ribi::newick::CreateValidBinaryNewicks();
     for(const std::string& s: v)
     {
       const std::vector<int> n = ribi::Newick().StringToNewick(s);
@@ -322,7 +322,7 @@ BOOST_AUTO_TEST_CASE(ribi_newick_IsTrinaryNewick_on_CreateValidTrinaryNewicks)
 {
   //Check if trinary Newicks are detected correctly
   {
-    const std::vector<std::string> v = ribi::Newick().CreateValidTrinaryNewicks();
+    const std::vector<std::string> v = ribi::newick::CreateValidTrinaryNewicks();
     for(const std::string& s: v)
     {
       //TRACE(s);
@@ -507,7 +507,7 @@ BOOST_AUTO_TEST_CASE(ribi_newick_compare_GetSimplerNewicks_and_GetSimplerNewicks
   //Compare GetSimplerNewicks and
   //GetSimplerNewicksFrequencyPairs
   const std::vector<std::string> newicks
-    = ribi::Newick().CreateValidNewicks();
+    = ribi::newick::CreateValidNewicks();
   for(const std::string& newick_str: newicks)
   {
     const std::vector<int> newick

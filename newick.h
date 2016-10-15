@@ -41,7 +41,6 @@ namespace ribi {
 
 ///namespace Newick contains general Newick functions,
 ///not using an Newick class
-
 struct Newick
 {
   enum { bracket_open  = -1 };
@@ -49,42 +48,6 @@ struct Newick
   enum { comma         = -3 };
   enum { new_line      = -4 };
   enum { null          = -5 };
-
-  ///fuzzy_equal_to is a predicate to test two doubles for equality
-  ///with a certain tolerance. A tolerance of 0.0 denotes that
-  ///an exact match is requested. Note that the value of 0.0 cannot
-  ///be compared fuzzily.
-  //From http://www.richelbilderbeek.nl/CppFuzzy_equal_to.htm
-  /*
-  struct fuzzy_equal_to
-  {
-    fuzzy_equal_to(const double tolerance = 0.01)
-      : m_tolerance(tolerance)
-    {
-      assert(tolerance >= 0.0);
-    }
-    bool operator()(const double lhs, const double rhs) const
-    {
-      const double d = std::fabs(m_tolerance * lhs);
-      return rhs > lhs - d
-          && rhs < lhs + d;
-    }
-    const double m_tolerance;
-  };
-  */
-  ///CreateVector creates a std::vector from three arguments
-  ///From http://www.richelbilderbeek.nl/CppCreateVector.htm
-
-  template <class T>
-  std::vector<T> CreateVector(const T& a, const T& b, const T& c)
-  {
-    std::vector<T> v;
-    v.reserve(3);
-    v.push_back(a);
-    v.push_back(b);
-    v.push_back(c);
-    return v;
-  }
 
   ///AllAboutEqual tests if all values in a std::vector are about equal.
   ///From http://www.richelbilderbeek.nl/CppAllAboutEqual.htm
@@ -158,30 +121,10 @@ struct Newick
   ///From http://www.richelbilderbeek.nl/CppCreateRandomBinaryNewickVector.htm
   std::vector<int> CreateRandomBinaryNewickVector(const int n,const int max) noexcept;
 
-  ///CreateValidBinaryNewicks creates std::strings
-  ///that can be converted to a BinaryNewickVector.
-  ///From http://www.richelbilderbeek.nl/CppCreateValidBinaryNewicks.htm
-  std::vector<std::string> CreateValidBinaryNewicks() noexcept;
-
-  ///CreateValidNewicks creates std::strings
-  ///that are valid newicks.
-  ///From http://www.richelbilderbeek.nl/CppCreateValidNewicks.htm
-  std::vector<std::string> CreateValidNewicks() noexcept;
-
-  ///CreateValidTrinaryNewicks creates std::strings
-  ///that can be converted to a TrinaryNewickVector.
-  ///From http://www.richelbilderbeek.nl/CppCreateValidTinaryNewicks.htm
-  std::vector<std::string> CreateValidTrinaryNewicks() noexcept;
-
-  ///CreateValidUnaryNewicks creates unary Newick std::strings
-  std::vector<std::string> CreateValidUnaryNewicks() noexcept;
-
-
   ///DumbNewickToString converts a Newick std::vector<int> to a
   ///standard-format std::string without error checking.
   ///From http://www.richelbilderbeek.nl/CppDumbNewickToString.htm
   std::string DumbNewickToString(const std::vector<int>& v) noexcept;
-
 
   ///Factorial calculates the factorial of all std::vector elements.
   ///From http://www.richelbilderbeek.nl/CppFactorial.htm
@@ -316,9 +259,6 @@ struct Newick
   ///From http://www.richelbilderbeek.nl/CppNewickToVector.htm
   std::vector<int> StringToNewick(const std::string& newick) const;
 
-  ///Surround surrounds the Newick with brackets
-  std::vector<int> Surround(const std::vector<int>& newick) const noexcept;
-
   template <class NewickType>
   double CalculateProbability(
     const NewickType& n,
@@ -352,12 +292,6 @@ struct Newick
       std::vector<NewickType> newicks;
       {
         const double d = n.CalcDenominator(theta);
-        #ifdef TRACE_NEWICK_CALCULATEPROBABILITY
-        TRACE("Denominator for "
-          + n.ToStr()
-          + " = "
-          + boost::lexical_cast<std::string>(d));
-        #endif
         typedef std::pair<std::vector<int>,int> NewickFrequencyPair;
         const std::vector<NewickFrequencyPair> newick_freqs
           = Newick::GetSimplerNewicksFrequencyPairs(n.Peek());
@@ -376,12 +310,6 @@ struct Newick
             newicks.push_back(p.first);
             coefficients.push_back( (f_d*(f_d-1.0)) / d);
           }
-          #ifdef TRACE_NEWICK_CALCULATEPROBABILITY
-          TRACE("BinaryNewickVector "
-            + Newick::NewickToString(p.first)
-            + " has coefficient "
-            + boost::lexical_cast<std::string>(coefficients.back()))
-          #endif
         }
       }
       //Ask help about these new Newicks
@@ -417,6 +345,48 @@ struct Newick
 }
 
 };
+
+namespace newick {
+
+///CreateValidBinaryNewicks creates std::strings
+///that can be converted to a BinaryNewickVector.
+///From http://www.richelbilderbeek.nl/CppCreateValidBinaryNewicks.htm
+std::vector<std::string> CreateValidBinaryNewicks() noexcept;
+
+///CreateValidNewicks creates std::strings
+///that are valid newicks.
+///From http://www.richelbilderbeek.nl/CppCreateValidNewicks.htm
+std::vector<std::string> CreateValidNewicks() noexcept;
+
+///CreateValidTrinaryNewicks creates std::strings
+///that can be converted to a TrinaryNewickVector.
+///From http://www.richelbilderbeek.nl/CppCreateValidTinaryNewicks.htm
+std::vector<std::string> CreateValidTrinaryNewicks() noexcept;
+
+///CreateValidUnaryNewicks creates unary Newick std::strings
+std::vector<std::string> CreateValidUnaryNewicks() noexcept;
+
+
+///CreateVector creates a std::vector from three arguments
+///From http://www.richelbilderbeek.nl/CppCreateVector.htm
+template <class T>
+std::vector<T> CreateVector(const T& a, const T& b, const T& c)
+{
+  std::vector<T> v;
+  v.reserve(3);
+  v.push_back(a);
+  v.push_back(b);
+  v.push_back(c);
+  return v;
+}
+
+///Surround surrounds the Newick with brackets
+std::vector<int> Surround(const std::vector<int>& newick) noexcept;
+
+///Surround surrounds the frequency with brackets
+std::vector<int> Surround(const int f) noexcept;
+
+} //~namespace newick
 
 } //~namespace ribi
 

@@ -219,10 +219,12 @@ std::vector<std::vector<int> >
     for (int i=1; i!=size-1; ++i) //Skip brackets
     {
       v.push_back(
-        Newick().CreateVector(
+        newick::CreateVector(
           static_cast<int>(Newick::bracket_open),
           n[i],
-          static_cast<int>(Newick::bracket_close)));
+          static_cast<int>(Newick::bracket_close)
+        )
+      );
     }
     assert(Newick().IsNewick(v.back()));
     assert(v.size() > 1);
@@ -239,10 +241,8 @@ std::vector<std::vector<int> >
     if (depth[i] == 0 && n[i] > 0)
     {
       //C++0x initialization list
-      std::vector<int> tmp;
-      tmp.push_back(static_cast<int>(Newick::bracket_open));
-      tmp.push_back(n[i]);
-      tmp.push_back(static_cast<int>(Newick::bracket_close));
+
+      std::vector<int> tmp = newick::Surround(n[i]);
       v.push_back(tmp);
       assert(Newick().IsNewick(v.back()));
       continue;
@@ -289,13 +289,6 @@ std::vector<std::pair<std::vector<int>,int> >
     {
       std::vector<int> new_newick(n);
       --new_newick[i];
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string stored = Newick::NewickToString(new_newick);
-        TRACE(stored);
-      }
-      #endif
-
       newicks.push_back( std::make_pair(new_newick,n[i]) );
       continue;
     }
@@ -331,15 +324,6 @@ std::vector<std::pair<std::vector<int>,int> >
       --new_newick_with_zero[i];
       assert(new_newick_with_zero[i] == 0);
       ++new_newick_with_zero[j];
-      //Remove brackets after possibly lonely value
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      {
-        const std::string newick_str_with_zeroes = Newick::DumbNewickToString(new_newick_with_zero);
-        TRACE(newick_str_with_zeroes);
-        const std::string dist_i_j = boost::lexical_cast<std::string>(std::abs(i - j));
-        TRACE(dist_i_j)
-      }
-      #endif
       //If there is only one or two values between
       //the brackets, and one of these values was a
       //1 becoming added to the other, nullify the
@@ -368,114 +352,12 @@ std::vector<std::pair<std::vector<int>,int> >
       if (new_newick.front() != Newick::bracket_open
         || new_newick.back() != Newick::bracket_close)
       {
-        new_newick = Newick().Surround(new_newick);
+        new_newick = newick::Surround(new_newick);
       }
       assert(Newick().IsNewick(new_newick));
       newicks.push_back(std::make_pair(new_newick, 1));
       continue;
     }
   }
-
   return newicks;
-
-  /*
-  const int size = boost::numeric_cast<int>(n.size());
-  for (int i = 0; i!=size; ++i)
-  {
-    if (n[i] < 1) continue;
-    assert(n[i] > 0);
-    if (n[i] > 1)
-    {
-      std::vector<int> new_newick(n);
-      --new_newick[i];
-      #ifdef DEBUG_GETSIMPLERNEWICKSFREQUENCYPAIRS
-      std::clog << "Store: " << Newick::NewickToString(new_newick) << '\n';
-      #endif
-      newicks.push_back(std::make_pair(new_newick,n[i]));
-      continue;
-    }
-    assert(n[i] == 1); //Most difficult...
-    const int depth = depths[i];
-    const int j_start = FindPosBefore(n,Newick::bracket_open,i);
-    const int j_end   = FindPosAfter( n,Newick::bracket_close,i);
-    assert(j_start >= 0);
-    assert(j_end >= 0);
-    assert(j_start <= boost::numeric_cast<int>(n.size()));
-    assert(j_end <= boost::numeric_cast<int>(n.size()));
-    for (int j=j_start; j!=j_end; ++j)
-    {
-      if (i==j) continue;
-      if (n[j] < 1) continue;
-      if (depths[j] != depth) continue;
-      //Decrement index i to zero
-      //Increment index j
-      std::vector<int> new_newick_with_zero(n);
-      --new_newick_with_zero[i];
-      assert(new_newick_with_zero[i] == 0);
-      ++new_newick_with_zero[j];
-      //Remove brackets after possibly lonely value
-      #ifdef DEBUG_GETSIMPLERNEWICKSFREQUENCYPAIRS
-      std::clog << "1: "
-        << Newick::DumbNewickToString(new_newick_with_zero)
-        << " -> ["
-        << i
-        << "]="
-        << new_newick_with_zero[i]
-        << " - ["
-        << j
-        << "]="
-        << new_newick_with_zero[j]
-        << " = "
-        << std::abs(i-j)
-        << '\n';
-      #endif
-      if (std::abs(i - j) == 1)
-      {
-        const int index_bracket_open  = std::min(i,j) - 1;
-        const int index_bracket_close = std::max(i,j) + 1;
-        #ifdef DEBUG_GETSIMPLERNEWICKSFREQUENCYPAIRS
-        std::clog
-          << "["
-          << index_bracket_open
-          << "]-["
-          << index_bracket_close
-          << "]\n";
-        #endif
-        if ( new_newick_with_zero[index_bracket_open]  == Newick::bracket_open
-          && new_newick_with_zero[index_bracket_close] == Newick::bracket_close)
-        {
-          new_newick_with_zero[index_bracket_open]  = 0;
-          new_newick_with_zero[index_bracket_close] = 0;
-          #ifdef DEBUG_GETSIMPLERNEWICKSFREQUENCYPAIRS
-          std::clog << "2.5: " << Newick::DumbNewickToString(new_newick_with_zero) << '\n';
-          #endif
-        }
-      }
-      #ifdef DEBUG_GETSIMPLERNEWICKS
-      std::clog << "2: " << Newick::DumbNewickToString(new_newick_with_zero) << '\n';
-      #endif
-      //Remove decremented i and possibly nullified brackets
-      std::vector<int> new_newick;
-      std::remove_copy(
-        new_newick_with_zero.begin(),
-        new_newick_with_zero.end(),
-        std::back_inserter(new_newick),
-        0);
-      //Add brackets if these are removed
-      if (new_newick.front() != Newick::bracket_open
-        || new_newick.back() != Newick::bracket_close)
-      {
-        new_newick = Surround(new_newick);
-      }
-      #ifdef DEBUG_GETSIMPLERNEWICKSFREQUENCYPAIRS
-      std::clog << "Store: " << Newick::DumbNewickToString(new_newick) << '\n';
-      #endif
-      assert(IsNewick(new_newick));
-      assert(n[i] == 1);
-      newicks.push_back(std::make_pair(new_newick,1));
-      //newicks.push_back(new_newick);
-      continue;
-    }
-  }
-  */
 }

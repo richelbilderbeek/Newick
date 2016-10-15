@@ -596,39 +596,39 @@ std::vector<int> ribi::Newick::CreateRandomBinaryNewickVector(const int n,const 
   return v;
 }
 
-std::vector<std::string> ribi::Newick::CreateValidBinaryNewicks() noexcept
+std::vector<std::string> ribi::newick::CreateValidBinaryNewicks() noexcept
 {
-  std::vector<std::string> v;
-  v.push_back("(1,2)");
-  v.push_back("(11,22)");
-  v.push_back("(1,(1,1))");
-  v.push_back("(1,(1,2))");
-  v.push_back("(1,(2,1))");
-  v.push_back("(1,(2,2))");
-  v.push_back("(1,(2,3))");
-  v.push_back("(2,(1,1))");
-  v.push_back("(2,(1,2))");
-  v.push_back("(2,(2,1))");
-  v.push_back("(2,(2,2))");
-  v.push_back("(4,(2,3))");
-  v.push_back("((2,3),4)");
-  v.push_back("(2,((2,3),4))");
-  v.push_back("(11,(22,33))");
-  v.push_back("((22,33),33)");
-  v.push_back("((1,2),(3,4))");
-  v.push_back("(((1,2),(3,4)),5)");
-  v.push_back("(1,((2,3),(4,5)))");
-  v.push_back("((11,2),(3,44))");
-  v.push_back("(((1,22),(33,4)),(55,6))");
-  return v;
+  return {
+    "(1,2)",
+    "(11,22)",
+    "(1,(1,1))",
+    "(1,(1,2))",
+    "(1,(2,1))",
+    "(1,(2,2))",
+    "(1,(2,3))",
+    "(2,(1,1))",
+    "(2,(1,2))",
+    "(2,(2,1))",
+    "(2,(2,2))",
+    "(4,(2,3))",
+    "((2,3),4)",
+    "(2,((2,3),4))",
+    "(11,(22,33))",
+    "((22,33),33)",
+    "((1,2),(3,4))",
+    "(((1,2),(3,4)),5)",
+    "(1,((2,3),(4,5)))",
+    "((11,2),(3,44))",
+    "(((1,22),(33,4)),(55,6))"
+  };
 }
 
-std::vector<std::string> ribi::Newick::CreateValidTrinaryNewicks() noexcept
+std::vector<std::string> ribi::newick::CreateValidTrinaryNewicks() noexcept
 {
   return NewickCpp98().CreateValidTrinaryNewicks();
 }
 
-std::vector<std::string> ribi::Newick::CreateValidNewicks() noexcept
+std::vector<std::string> ribi::newick::CreateValidNewicks() noexcept
 {
   std::vector<std::string> v;
   {
@@ -643,22 +643,27 @@ std::vector<std::string> ribi::Newick::CreateValidNewicks() noexcept
     std::vector<std::string> w = CreateValidTrinaryNewicks();
     std::copy(w.begin(),w.end(),std::back_inserter(v));
   }
-  v.push_back("(1,2,3,4)");
-  v.push_back("(1,2,3,4,5)");
-  v.push_back("(1,2,3,4,5,6)");
-  v.push_back("(1,2,3,4,5,6,7)");
-  v.push_back("(1,2,3,4,5,6,7,8)");
-  v.push_back("((1,2,3,4,5,6,7,8),(1,2,3,4,5,6,7,8),(1,2,3,4,5,6,7,8))");
+  {
+    const std::vector<std::string> w = {
+      "(1,2,3,4)",
+      "(1,2,3,4,5)",
+      "(1,2,3,4,5,6)",
+      "(1,2,3,4,5,6,7)",
+      "(1,2,3,4,5,6,7,8)",
+      "((1,2,3,4,5,6,7,8),(1,2,3,4,5,6,7,8),(1,2,3,4,5,6,7,8))"
+    };
+    std::copy(w.begin(),w.end(),std::back_inserter(v));
+  }
   return v;
 }
 
-std::vector<std::string> ribi::Newick::CreateValidUnaryNewicks() noexcept
+std::vector<std::string> ribi::newick::CreateValidUnaryNewicks() noexcept
 {
-  std::vector<std::string> v;
-  v.push_back("(1)");
-  v.push_back("(9)");
-  v.push_back("(123)");
-  return v;
+  return {
+    "(1)",
+    "(9)",
+    "(123)"
+  };
 }
 
 std::string ribi::Newick::DumbNewickToString(const std::vector<int>& v) noexcept
@@ -830,11 +835,11 @@ std::pair<std::vector<int>,std::vector<int> >
     assert(n[1] > 0);
     assert(n[2] > 0);
     return std::make_pair(
-      CreateVector(
+      newick::CreateVector(
         static_cast<int>(bracket_open),
         n[1],
         static_cast<int>(bracket_close)),
-      CreateVector(
+      newick::CreateVector(
         static_cast<int>(bracket_open),
         n[2],
         static_cast<int>(bracket_close)));
@@ -848,12 +853,12 @@ std::pair<std::vector<int>,std::vector<int> >
     if ( lhs.front() != Newick::bracket_open
       || lhs.back()  != Newick::bracket_close)
     {
-      lhs = Surround(lhs);
+      lhs = newick::Surround(lhs);
     }
     if ( rhs.front() != Newick::bracket_open
       || rhs.back()  != Newick::bracket_close)
     {
-      rhs = Surround(rhs);
+      rhs = newick::Surround(rhs);
     }
     if (IsNewick(lhs) && IsNewick(rhs))
     {
@@ -896,10 +901,11 @@ std::vector<std::vector<int> >
     if (n[1] == 1)
     {
       std::vector<int> next
-        = CreateVector(
+        = newick::CreateVector(
             static_cast<int>(bracket_open),
             n[2]+1,
-            static_cast<int>(bracket_close));
+            static_cast<int>(bracket_close)
+          );
       assert(IsNewick(next));
       newicks.push_back(next);
     }
@@ -913,10 +919,11 @@ std::vector<std::vector<int> >
     if (n[2] == 1)
     {
       std::vector<int> next
-        = CreateVector(
+        = newick::CreateVector(
             static_cast<int>(bracket_open),
             n[1]+1,
-            static_cast<int>(bracket_close));
+            static_cast<int>(bracket_close)
+          );
       assert(IsNewick(next));
       newicks.push_back(next);
     }
@@ -1073,7 +1080,7 @@ std::vector<std::vector<int> >
       if (new_newick.front() != Newick::bracket_open
         || new_newick.back() != Newick::bracket_close)
       {
-        new_newick = Surround(new_newick);
+        new_newick = newick::Surround(new_newick);
       }
       assert(IsNewick(new_newick));
       newicks.push_back(new_newick);
@@ -1125,10 +1132,11 @@ std::vector<std::pair<std::vector<int>,int> >
     if (n[1] == 1)
     {
       std::vector<int> next
-        = CreateVector(
+        = newick::CreateVector(
             static_cast<int>(bracket_open),
             n[2]+1,
-            static_cast<int>(bracket_close));
+            static_cast<int>(bracket_close)
+          );
       assert(IsNewick(next));
       v.push_back(std::make_pair(next,1));
     }
@@ -1142,10 +1150,11 @@ std::vector<std::pair<std::vector<int>,int> >
     if (n[2] == 1)
     {
       std::vector<int> next
-        = CreateVector(
+        = newick::CreateVector(
             static_cast<int>(bracket_open),
             n[1]+1,
-            static_cast<int>(bracket_close));
+            static_cast<int>(bracket_close)
+          );
       assert(IsNewick(next));
       v.push_back(std::make_pair(next,1));
     }
@@ -1458,11 +1467,20 @@ std::vector<int> ribi::Newick::StringToNewick(const std::string& newick) const
   return v;
 }
 
-std::vector<int> ribi::Newick::Surround(const std::vector<int>& newick) const noexcept
+std::vector<int> ribi::newick::Surround(const std::vector<int>& newick) noexcept
 {
   std::vector<int> new_newick;
   new_newick.push_back(Newick::bracket_open);
   std::copy(newick.begin(),newick.end(),std::back_inserter(new_newick));
   new_newick.push_back(Newick::bracket_close);
   return new_newick;
+}
+
+std::vector<int> ribi::newick::Surround(const int f) noexcept
+{
+  return CreateVector(
+    static_cast<int>(Newick::bracket_open),
+    f,
+    static_cast<int>(Newick::bracket_close)
+  );
 }
