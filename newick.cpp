@@ -375,11 +375,6 @@ void ribi::Newick::CheckNewick(const std::string& s) const
 
 void ribi::Newick::CheckNewick(const std::vector<int>& v) const
 {
-  #ifndef NDEBUG
-  //std::clog << "Researching newick: '"
-  //  << DumbNewickToString(v) << '\n';
-  #endif
-
   if (v.size()<3)
     throw std::invalid_argument(
       "The Newick std::vector<int> must have a size of at least three characters");
