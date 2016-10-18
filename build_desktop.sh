@@ -1,3 +1,3 @@
 #!/bin/bash
 qmake TestNewickDesktop.pro
-make
+make debug

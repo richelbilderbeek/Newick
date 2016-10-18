@@ -99,12 +99,6 @@ struct Newick
   ///From http://www.richelbilderbeek.nl/CppCheckNewick.htm
   void CheckNewick(const std::string& s) const;
 
-  ///CheckNewick checks if a std::vector<int> is a valid Newick.
-  ///If this std::vector<int> is not a valid Newick,
-  ///CheckNewick throws an exception with a detailed description
-  ///From http://www.richelbilderbeek.nl/CppCheckNewick.htm
-  void CheckNewick(const std::vector<int>& v) const;
-
   ///CreateInvalidNewicks creates std::strings
   ///that cannot and must not be converted to a Newick
   ///From http://www.richelbilderbeek.nl/CppCreateInvalidNewicks.htm
@@ -360,6 +354,36 @@ struct Newick
 
 namespace newick {
 
+enum { bracket_open  = -1 };
+enum { bracket_close = -2 };
+enum { comma         = -3 };
+enum { new_line      = -4 };
+enum { null          = -5 };
+
+///CheckNewick checks if a std::vector<int> is a valid Newick.
+///If this std::vector<int> is not a valid Newick,
+///CheckNewick throws an exception with a detailed description
+///From http://www.richelbilderbeek.nl/CppCheckNewick.htm
+void CheckNewick(const std::vector<int>& v);
+
+///Throws if Newick is too short to be valid
+void CheckNewickForMinimalSize(const std::vector<int>& v);
+
+///Throws if Newick has no opening bracket
+void CheckNewickForOpeningBracket(const std::vector<int>& v);
+
+///Throws if Newick has no closing bracket
+void CheckNewickForClosingBracket(const std::vector<int>& v);
+
+///Throws if Newick has an equal number of opening and closing brackets
+void CheckNewickForMatchingBrackets(const std::vector<int>& v);
+
+///Throws if Newick has a frequency of zero
+void CheckNewickForNonZero(const std::vector<int>& v);
+
+///Throws if Newick has no value between brackets, e.g '(1,())'
+void CheckNewickForBracketDistance(const std::vector<int>& v);
+
 ///CreateValidBinaryNewicks creates std::strings
 ///that can be converted to a BinaryNewickVector.
 ///From http://www.richelbilderbeek.nl/CppCreateValidBinaryNewicks.htm
@@ -399,7 +423,6 @@ std::vector<int> Surround(const std::vector<int>& newick) noexcept;
 std::vector<int> Surround(const int f) noexcept;
 
 } //~namespace newick
-
 } //~namespace ribi
 
 #endif // NEWICK_H

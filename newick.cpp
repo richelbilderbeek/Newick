@@ -373,27 +373,92 @@ void ribi::Newick::CheckNewick(const std::string& s) const
   }
 }
 
-void ribi::Newick::CheckNewick(const std::vector<int>& v) const
+void ribi::newick::CheckNewickForMinimalSize(const std::vector<int>& v)
 {
   if (v.size()<3)
+  {
     throw std::invalid_argument(
-      "The Newick std::vector<int> must have a size of at least three characters");
-  if (v[0]!=bracket_open)
-    throw std::invalid_argument(
-      "The Newick std::vector<int> must start with an opening bracket ('(').");
-  if (v[v.size()-1]!=bracket_close)
-    throw std::invalid_argument(
-      "The Newick std::vector<int> must end with a closing bracket (')').");
-  if (std::count(v.begin(),v.end(),static_cast<int>(bracket_open))
-    !=std::count(v.begin(),v.end(),static_cast<int>(bracket_close)))
-    throw std::invalid_argument(
-       "The Newick std::string must have as much opening "
-       "as closing brackets #1");
-  if (std::count(v.begin(),v.end(),0))
-    throw std::invalid_argument(
-      "A std::vector<int> Newick frequency cannot be "
-      "zero");
+      "The Newick std::vector<int> must have "
+      "a size of at least three characters"
+    );
+  }
+}
 
+void ribi::newick::CheckNewickForOpeningBracket(const std::vector<int>& v)
+{
+  CheckNewickForMinimalSize(v);
+  if (v[0]!=bracket_open)
+  {
+    throw std::invalid_argument(
+      "The Newick std::vector<int> must start with "
+      "an opening bracket ('(')."
+    );
+  }
+}
+
+void ribi::newick::CheckNewickForClosingBracket(const std::vector<int>& v)
+{
+  CheckNewickForMinimalSize(v);
+  if (v.back() != bracket_close)
+  {
+    throw std::invalid_argument(
+      "The Newick std::vector<int> must end with "
+      "a closing bracket (')')."
+    );
+  }
+}
+
+void ribi::newick::CheckNewickForMatchingBrackets(const std::vector<int>& v)
+{
+  if (std::count(std::begin(v),std::end(v),static_cast<int>(bracket_open))
+   != std::count(std::begin(v),std::end(v),static_cast<int>(bracket_close))
+  )
+  {
+    throw std::invalid_argument(
+      "The Newick std::string must have as much opening "
+      "as closing brackets"
+    );
+  }
+}
+
+void ribi::newick::CheckNewickForNonZero(const std::vector<int>& v)
+{
+  if (std::count(std::begin(v),std::end(v),0))
+  {
+    throw std::invalid_argument(
+      "A std::vector<int> Newick frequency cannot be zero"
+    );
+  }
+}
+
+void ribi::newick::CheckNewickForBracketDistance(const std::vector<int>& v)
+{
+  CheckNewickForMinimalSize(v);
+  auto left = std::begin(v);
+  auto right = std::begin(v);
+  ++right;
+  for ( ; right != std::end(v); ++left, ++right)
+  {
+    const auto a = *left;
+    const auto b = *right;
+    if (a == bracket_open && b == bracket_close)
+    {
+      throw std::invalid_argument(
+        "The Newick std::vector<int> cannot have "
+        "a consecutive opening and closing bracket"
+      );
+    }
+  }
+}
+
+void ribi::newick::CheckNewick(const std::vector<int>& v)
+{
+  CheckNewickForMinimalSize(v);
+  CheckNewickForOpeningBracket(v);
+  CheckNewickForClosingBracket(v);
+  CheckNewickForMatchingBrackets(v);
+  CheckNewickForNonZero(v);
+  CheckNewickForBracketDistance(v);
 
   std::vector<int> v_copy = v;
   while(v_copy.size()>2) //Find a leaf and cut it until the string is empty
@@ -408,13 +473,8 @@ void ribi::Newick::CheckNewick(const std::vector<int>& v) const
       if (v_copy[i]!=bracket_open) continue;
 
       assert(v_copy[i]==bracket_open);
-
       assert(i+1 < v_copy.size());
-
-      if (v_copy[i+1]==bracket_close)
-        throw std::invalid_argument(
-          "The Newick std::vector<int> cannot have "
-          "a consecutive opening and closing bracket");
+      assert(v_copy[i+1]!=bracket_close); //Already checked
 
       for (j=i+1; j!=sz; ++j)
       {
@@ -431,24 +491,14 @@ void ribi::Newick::CheckNewick(const std::vector<int>& v) const
       }
 
       if (j ==  0) continue; //j cannot be 0 after previous for loop
-      if (j == sz)
-        throw std::invalid_argument(
-          "The Newick std::vector<int> must have as much opening "
-          "as closing brackets #2");
+      assert(j != sz); //CheckNewickForMatchingBrackets
       break;
     }
-    if (v_copy[i]!=bracket_open)
-      throw std::invalid_argument(
-        "The Newick std::vector<int> must have as much opening "
-        "as closing brackets #3");
+    assert(v_copy[i] == bracket_open); //CheckNewickForMatchingBrackets
     //Indices i and j found
     //Is range between i and j valid?
-    if (v_copy[i]!=bracket_open)
-      throw std::logic_error(
-        "Bilderbikkel incorrectly assumes that s_copy[i]=='('");
-    if (v_copy[j]!=bracket_close)
-      throw std::logic_error(
-        "Bilderbikkel incorrectly assumes that s_copy[j]==')'");
+    assert(v_copy[i]==bracket_open);
+    assert(v_copy[j]==bracket_close);
     //Check the range
     for (size_t k=i+1; k!=j; ++k)
     {
@@ -1245,7 +1295,7 @@ void ribi::Newick::InspectInvalidNewick(std::ostream& os, const std::vector<int>
     << DumbNewickToString(v) << '\n';
   try
   {
-    CheckNewick(v);
+    newick::CheckNewick(v);
   }
   catch (std::exception& e)
   {
@@ -1299,7 +1349,7 @@ bool ribi::Newick::IsNewick(const std::vector<int>& v) const noexcept
 {
   try
   {
-    CheckNewick(v);
+    newick::CheckNewick(v);
   }
   catch (...)
   {

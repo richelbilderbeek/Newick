@@ -152,7 +152,7 @@ void ribi::TestNewickVector::Calculate(const std::string& newick_str, const doub
   assert(CanCalculate(newick_str,theta));
   boost::timer t;
   const double p
-    = NewickVector::CalculateProbability(
+    = CalculateProbabilityNewickVector(
       newick_str,theta);
   SetTime(t.elapsed());
   SetProbability(p);
@@ -196,10 +196,12 @@ void ribi::TestTwoDigitNewick::Calculate(const std::string& newick_str, const do
 {
   assert(CanCalculate(newick_str,theta));
   boost::timer t;
-  const double p
-    = TwoDigitNewick::CalculateProbability(
+  const double p{
+    CalculateProbabilityTwoDigitNewick(
       newick_str,
-      theta);
+      theta
+    )
+  };
   SetTime(t.elapsed());
   SetProbability(p);
 }

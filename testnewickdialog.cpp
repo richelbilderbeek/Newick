@@ -24,9 +24,7 @@ ribi::TestNewickDialog::TestNewickDialog(const int types)
 {
   //Test all Newicks
   #ifndef NDEBUG
-  TwoDigitNewick();
-
-  const std::vector<std::string> newicks = Newick().CreateValidNewicks();
+  const std::vector<std::string> newicks = newick::CreateValidNewicks();
   const std::vector<boost::shared_ptr<TestNewick> > tests
     = TestNewick::CreateTests(TestNewick::m_flag_all);
   const BigInteger max_complexity = 10000;
@@ -204,12 +202,13 @@ ribi::About ribi::GetTestNewickAbout() noexcept
     "2010-2015",
     "http://www.richelbilderbeek.nl/ToolTestNewick.htm",
     GetTestNewickVersion(),
-    GetTestNewickVersionHistory());
+    GetTestNewickVersionHistory()
+  );
   about.AddLibrary("BigInt: version 2010.04.30");
   about.AddLibrary("BinaryNewickVector: version " + BinaryNewickVector::GetVersion());
-  about.AddLibrary("NewickVector: version " + NewickVector::GetVersion());
+  about.AddLibrary("NewickVector: version " + GetNewickVectorVersion());
   about.AddLibrary("SortedBinaryNewickVector: version " + SortedBinaryNewickVector::GetVersion());
-  about.AddLibrary("TwoDigitNewick: version " + TwoDigitNewick::GetVersion());
+  about.AddLibrary("TwoDigitNewick: version " + GetTwoDigitNewickVersion());
   return about;
 }
 
