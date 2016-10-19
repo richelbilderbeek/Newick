@@ -1,3 +1,5 @@
+CONFIG += debug_and_release
+
 include(../RibiLibraries/DesktopApplication.pri)
 include(../RibiLibraries/Boost.pri)
 include(../RibiLibraries/BigInteger.pri)

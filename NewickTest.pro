@@ -34,7 +34,7 @@ QT += gui
 # application to work non-GUI
 #greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG   += console
+CONFIG   += console debug_and_release
 CONFIG   -= app_bundle
 TEMPLATE = app
 
