@@ -7,6 +7,7 @@
 #include "fuzzy_equal_to.h"
 #include "newick.h"
 
+#include <set>
 #include <boost/test/unit_test.hpp>
 
 using namespace ribi;
@@ -269,7 +270,7 @@ BOOST_AUTO_TEST_CASE(ribi_newickcpp98_all)
   {
     const std::string s("(1,(2,3))");
     const std::vector<std::vector<int> > n
-      = Newick().GetSimplerNewicks(Newick().StringToNewick(s));
+      = newick::GetSimplerNewicks(Newick().StringToNewick(s));
     //#define DEBUG_1_BO_1_2_3_BC
     #ifdef  DEBUG_1_BO_1_2_3_BC
     for(const auto& t: n)
@@ -286,7 +287,7 @@ BOOST_AUTO_TEST_CASE(ribi_newickcpp98_all)
   {
     const std::string s("(1,(2,3,4))");
     const std::vector<std::vector<int> > n
-      = Newick().GetSimplerNewicks(Newick().StringToNewick(s));
+      = newick::GetSimplerNewicks(Newick().StringToNewick(s));
     BOOST_CHECK(n.size() == 3);
     BOOST_CHECK(std::find(n.begin(),n.end(),Newick().StringToNewick("(1,(1,3,4))"))
       != n.end());
@@ -298,7 +299,7 @@ BOOST_AUTO_TEST_CASE(ribi_newickcpp98_all)
   {
     const std::string s("(1,(1,3,4))");
     const std::vector<std::vector<int> > n
-     = Newick().GetSimplerNewicks(Newick().StringToNewick(s));
+     = newick::GetSimplerNewicks(Newick().StringToNewick(s));
     //#define DEBUG_1_BO_1_3_4_BC
     #ifdef  DEBUG_1_BO_1_3_4_BC
     TRACE(boost::lexical_cast<std::string>(n.size()));
@@ -345,7 +346,7 @@ BOOST_AUTO_TEST_CASE(ribi_newickcpp98_all)
   {
     const std::string s("((1,1),2)");
     const std::vector<std::vector<int> > n
-      = Newick().GetSimplerNewicks(
+      = newick::GetSimplerNewicks(
         Newick().StringToNewick(s)
       );
     //#define DEBUG_BO_1_1_BC_2
@@ -385,7 +386,7 @@ BOOST_AUTO_TEST_CASE(ribi_newickcpp98_all)
   {
     const std::string s("((2,1),4)");
     const std::vector<std::vector<int> > n
-      = Newick().GetSimplerNewicks(
+      = newick::GetSimplerNewicks(
         Newick().StringToNewick(s)
       );
     BOOST_CHECK(n.size() == 3);
@@ -424,7 +425,7 @@ BOOST_AUTO_TEST_CASE(ribi_newickcpp98_all)
   {
     const std::string s("((2,3),4)");
     const std::vector<std::vector<int> > n
-      = Newick().GetSimplerNewicks(
+      = newick::GetSimplerNewicks(
         Newick().StringToNewick(s)
       );
     BOOST_CHECK(n.size() == 3);
@@ -470,16 +471,22 @@ BOOST_AUTO_TEST_CASE(ribi_newickcpp98_all)
       const std::vector<int> newick
         = Newick().StringToNewick(newick_str);
       const std::vector<std::vector<int> > v1
-        = Newick().GetSimplerNewicks(newick);
+        = newick::GetSimplerNewicks(newick);
       const std::vector<std::pair<std::vector<int>,int> > v2
-        = Newick().GetSimplerNewicksFrequencyPairs(newick);
+        = newick::GetSimplerNewicksFrequencyPairs(newick);
       BOOST_CHECK(v1.size() == v2.size());
-      const int size = boost::numeric_cast<int>(v1.size());
-      for (int i=0; i!=size; ++i)
-      {
-        BOOST_CHECK(v1[i] == v2[i].first);
-      }
-      BOOST_CHECK(Newick().GetSimplerNewicksFrequencyPairs(newick)
+      //Create sets that should be equal
+      std::set<std::vector<int>> s1;
+      std::copy(std::begin(v1), std::end(v1),
+        std::inserter(s1, std::end(s1))
+      );
+      std::set<std::vector<int>> s2;
+      std::transform(std::begin(v2), std::end(v2),
+        std::inserter(s2, std::end(s2)),
+        [](const auto& p) { return p.first;}
+      );
+      BOOST_CHECK(s1 == s2);
+      BOOST_CHECK(newick::GetSimplerNewicksFrequencyPairs(newick)
         == NewickCpp98().GetSimplerNewicksFrequencyPairs(newick));
     }
   }

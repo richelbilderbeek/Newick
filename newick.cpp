@@ -1094,17 +1094,13 @@ std::vector<std::vector<int> >
   return newicks;
 }
 
-std::vector<std::vector<int> >
-  ribi::newick::GetSimplerNewicks(const std::vector<int>& n) noexcept
+std::vector<std::vector<int>>
+  ribi::newick::GetSimplerNewicksEasy(const std::vector<int>& n) noexcept
 {
   assert(newick::IsNewick(n));
-
-  const std::vector<int> depths = Newick().GetDepth(n);
-
   std::vector<std::vector<int>> newicks;
-
   const int size = boost::numeric_cast<int>(n.size());
-  //Go through all positions
+
   for (int i = 0; i!=size; ++i)
   {
     assert(i >= 0);
@@ -1117,8 +1113,25 @@ std::vector<std::vector<int> >
       std::vector<int> new_newick(n);
       --new_newick[i];
       newicks.push_back(new_newick);
-      continue;
     }
+  }
+  return newicks;
+}
+
+std::vector<std::vector<int>>
+  ribi::newick::GetSimplerNewicksHard(const std::vector<int>& n) noexcept
+{
+  assert(newick::IsNewick(n));
+  std::vector<std::vector<int>> newicks;
+  const int size = boost::numeric_cast<int>(n.size());
+  const std::vector<int> depths = Newick().GetDepth(n);
+
+  //Go through all positions
+  for (int i = 0; i!=size; ++i)
+  {
+    assert(i >= 0);
+    assert(i < size);
+    if (n[i] != 1) continue;
     //If a frequency is one, the Newick needs to be simplified
     assert(n[i] == 1); //Most difficult...
     const int depth = depths[i];
@@ -1128,9 +1141,7 @@ std::vector<std::vector<int> >
     for (int j=i-1; ; j+=j_step)
     {
       //j must first decrement, later increment with the same code
-      if (j == j_end
-        //|| depths[j] < depth
-        || (depths[j] == depth && n[j] < 0))
+      if (j == j_end || (depths[j] == depth && n[j] < 0))
       {
         if (j_step == -1)
         {
@@ -1159,7 +1170,6 @@ std::vector<std::vector<int> >
       //1 and both brackets:
       //'((1,1),2)' -> '(00102)' -> '(1,2)'
       if (std::abs(i - j) == 1)
-        //|| (std::abs(i - j) == 2 && n[i] == 1))
       {
         const int index_bracket_open  = std::min(i,j) - 1;
         const int index_bracket_close = std::max(i,j) + 1;
@@ -1191,8 +1201,24 @@ std::vector<std::vector<int> >
   return newicks;
 }
 
+std::vector<std::vector<int>>
+  ribi::newick::GetSimplerNewicks(const std::vector<int>& n) noexcept
+{
+  assert(newick::IsNewick(n));
+  std::vector<std::vector<int>> newicks = GetSimplerNewicksEasy(n);
+  const std::vector<std::vector<int>> hard_newicks = GetSimplerNewicksHard(n);
+  std::copy(
+    std::begin(hard_newicks),
+    std::end(hard_newicks),
+    std::back_inserter(newicks)
+  );
+  return newicks;
+}
+
 std::vector<std::pair<std::vector<int>,int> >
-  ribi::Newick::GetSimplerNewicksFrequencyPairs(const std::vector<int>& n) noexcept
+  ribi::newick::GetSimplerNewicksFrequencyPairs(
+  const std::vector<int>& n
+)
 {
   return NewickCpp98().GetSimplerNewicksFrequencyPairs(n);
 }

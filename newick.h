@@ -173,13 +173,6 @@ struct Newick
   std::vector<std::vector<int> > GetSimplerBinaryNewicks(
     const std::vector<int>& n) noexcept;
 
-  ///GetSimplerNewicksFrequencyPairs creates simpler, derived Newicks from a Newick.
-  ///Its simpler Newicks are identical to those created by GetSimplerNewicks.
-  ///From http://www.richelbilderbeek.nl/CppGetSimplerNewicksFrequencyPairs.htm
-  std::vector<std::pair<std::vector<int>,int> >
-    GetSimplerNewicksFrequencyPairs(
-    const std::vector<int>& n) noexcept;
-
   ///GetSimplerBinaryNewicksFrequencyPairs creates simpler, derived Newicks from a
   ///binary Newick as well as the frequency that is simplified.
   std::vector<std::pair<std::vector<int>,int> >
@@ -240,92 +233,6 @@ struct Newick
   ///has both trailing and tailing brackets.
   ///From http://www.richelbilderbeek.nl/CppNewickToVector.htm
   std::vector<int> StringToNewick(const std::string& newick) const;
-
-  template <class NewickType>
-  double CalculateProbability(
-    const NewickType& n,
-    const double theta,
-    NewickStorage<NewickType>& storage)
-{
-  //#define TRACE_NEWICK_CALCULATEPROBABILITY
-  while(1)
-  {
-    try
-    {
-      //Is n already known?
-      {
-        const double p = storage.Find(n);
-        if (p!=0.0)
-        {
-          return p;
-        }
-      }
-
-      //Check for simple phylogeny
-      if (n.IsSimple())
-      {
-        const double p = n.CalcProbabilitySimpleNewick(theta);
-        storage.Store(n,p);
-        return p;
-      }
-      //Complex
-      //Generate other Newicks and their coefficients
-      std::vector<double> coefficients;
-      std::vector<NewickType> newicks;
-      {
-        const double d = n.CalcDenominator(theta);
-        typedef std::pair<std::vector<int>,int> NewickFrequencyPair;
-        const std::vector<NewickFrequencyPair> newick_freqs
-          = Newick::GetSimplerNewicksFrequencyPairs(n.Peek());
-        for(const NewickFrequencyPair& p: newick_freqs)
-        {
-          const int frequency = p.second;
-          assert(frequency > 0);
-          if (frequency == 1)
-          {
-            newicks.push_back(p.first);
-            coefficients.push_back(theta / d);
-          }
-          else
-          {
-            const double f_d = static_cast<double>(frequency);
-            newicks.push_back(p.first);
-            coefficients.push_back( (f_d*(f_d-1.0)) / d);
-          }
-        }
-      }
-      //Ask help about these new Newicks
-      {
-        const int sz = newicks.size();
-        assert(newicks.size() == coefficients.size() );
-        double p = 0.0;
-        for (int i=0; i!=sz; ++i)
-        {
-          //Recursive function call
-          p+=(coefficients[i] * CalculateProbability(newicks[i],theta,storage));
-        }
-        storage.Store(n,p);
-        return p;
-      }
-    }
-    catch (std::bad_alloc& e)
-    {
-      storage.CleanUp();
-      std::cerr << "std::bad_alloc\n";
-    }
-    catch (std::exception& e)
-    {
-      storage.CleanUp();
-      std::cerr << "std::exception";
-    }
-    catch (...)
-    {
-      storage.CleanUp();
-      std::cerr << "Unknown exception\n";
-    }
-  }
-}
-
 };
 
 namespace newick {
@@ -425,11 +332,31 @@ std::vector<T> CreateVector(const T& a, const T& b, const T& c)
   return v;
 }
 
+
 ///GetSimplerNewicks creates simpler, derived Newicks from a Newick.
 ///From http://www.richelbilderbeek.nl/CppGetSimplerNewicks.htm
 std::vector<std::vector<int>> GetSimplerNewicks(
   const std::vector<int>& n
 ) noexcept;
+
+///Used by GetSimplerNewicks
+std::vector<std::vector<int>> GetSimplerNewicksEasy(
+  const std::vector<int>& n
+) noexcept;
+
+///GetSimplerNewicksFrequencyPairs creates simpler, derived Newicks from a Newick.
+///Its simpler Newicks are identical to those created by GetSimplerNewicks.
+///From http://www.richelbilderbeek.nl/CppGetSimplerNewicksFrequencyPairs.htm
+std::vector<std::pair<std::vector<int>,int> >
+  GetSimplerNewicksFrequencyPairs(
+  const std::vector<int>& n
+);
+
+///Used by GetSimplerNewicks
+std::vector<std::vector<int>> GetSimplerNewicksHard(
+  const std::vector<int>& n
+) noexcept;
+
 
 ///IsNewick returns true if a std::string is a valid Newick
 ///and false otherwise.
@@ -449,6 +376,91 @@ std::vector<int> Surround(const std::vector<int>& newick) noexcept;
 
 ///Surround surrounds the frequency with brackets
 std::vector<int> Surround(const int f) noexcept;
+
+template <class NewickType>
+double CalculateProbability(
+  const NewickType& n,
+  const double theta,
+  NewickStorage<NewickType>& storage
+)
+{
+  while(1)
+  {
+    try
+    {
+      //Is n already known?
+      {
+        const double p = storage.Find(n);
+        if (p!=0.0)
+        {
+          return p;
+        }
+      }
+
+      //Check for simple phylogeny
+      if (n.IsSimple())
+      {
+        const double p = n.CalcProbabilitySimpleNewick(theta);
+        storage.Store(n,p);
+        return p;
+      }
+      //Complex
+      //Generate other Newicks and their coefficients
+      std::vector<double> coefficients;
+      std::vector<NewickType> newicks;
+      {
+        const double d = n.CalcDenominator(theta);
+        typedef std::pair<std::vector<int>,int> NewickFrequencyPair;
+        const std::vector<NewickFrequencyPair> newick_freqs
+          = GetSimplerNewicksFrequencyPairs(n.Peek());
+        for(const NewickFrequencyPair& p: newick_freqs)
+        {
+          const int frequency = p.second;
+          assert(frequency > 0);
+          if (frequency == 1)
+          {
+            newicks.push_back(p.first);
+            coefficients.push_back(theta / d);
+          }
+          else
+          {
+            const double f_d = static_cast<double>(frequency);
+            newicks.push_back(p.first);
+            coefficients.push_back( (f_d*(f_d-1.0)) / d);
+          }
+        }
+      }
+      //Ask help about these new Newicks
+      {
+        const int sz = newicks.size();
+        assert(newicks.size() == coefficients.size() );
+        double p = 0.0;
+        for (int i=0; i!=sz; ++i)
+        {
+          //Recursive function call
+          p+=(coefficients[i] * CalculateProbability(newicks[i],theta,storage));
+        }
+        storage.Store(n,p);
+        return p;
+      }
+    }
+    catch (std::bad_alloc& e)
+    {
+      storage.CleanUp();
+      std::cerr << "std::bad_alloc\n";
+    }
+    catch (std::exception& e)
+    {
+      storage.CleanUp();
+      std::cerr << "std::exception";
+    }
+    catch (...)
+    {
+      storage.CleanUp();
+      std::cerr << "Unknown exception\n";
+    }
+  }
+}
 
 } //~namespace newick
 } //~namespace ribi
