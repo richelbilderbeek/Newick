@@ -208,7 +208,7 @@ ribi::NewickCpp98::GetKnownProbabilities() noexcept
 std::vector<std::vector<int> > //!OCLINT Yes, too long, but I do not care about C++98
   ribi::NewickCpp98::GetRootBranches(const std::vector<int>& n)
 {
-  assert(Newick().IsNewick(n));
+  assert(newick::IsNewick(n));
   assert(!Newick().IsUnaryNewick(n));
 
   const int size = boost::numeric_cast<int>(n.size());
@@ -226,7 +226,7 @@ std::vector<std::vector<int> > //!OCLINT Yes, too long, but I do not care about 
         )
       );
     }
-    assert(Newick().IsNewick(v.back()));
+    assert(newick::IsNewick(v.back()));
     assert(v.size() > 1);
     return v;
   }
@@ -244,7 +244,7 @@ std::vector<std::vector<int> > //!OCLINT Yes, too long, but I do not care about 
 
       std::vector<int> tmp = newick::Surround(n[i]);
       v.push_back(tmp);
-      assert(Newick().IsNewick(v.back()));
+      assert(newick::IsNewick(v.back()));
       continue;
     }
     if (depth[i] != 1 || n[i]!=Newick::bracket_open) continue;
@@ -255,7 +255,7 @@ std::vector<std::vector<int> > //!OCLINT Yes, too long, but I do not care about 
       w.push_back(Newick::bracket_open);
       std::copy(n.begin() + i + 1,n.begin() + j,std::back_inserter(w));
       w.push_back(Newick::bracket_close);
-      assert(Newick().IsNewick(w));
+      assert(newick::IsNewick(w));
       v.push_back(w);
       //Set from index i after current end
       i = j;
@@ -272,7 +272,7 @@ std::vector<std::vector<int> > //!OCLINT Yes, too long, but I do not care about 
 std::vector<std::pair<std::vector<int>,int> > //!OCLINT Yes, too long, but I do not care about C++98
   ribi::NewickCpp98::GetSimplerNewicksFrequencyPairs(const std::vector<int>& n)
 {
-  assert(Newick().IsNewick(n));
+  assert(newick::IsNewick(n));
 
   std::vector<std::pair<std::vector<int>,int> > newicks;
   const std::vector<int> depths = Newick().GetDepth(n);
@@ -354,7 +354,7 @@ std::vector<std::pair<std::vector<int>,int> > //!OCLINT Yes, too long, but I do 
       {
         new_newick = newick::Surround(new_newick);
       }
-      assert(Newick().IsNewick(new_newick));
+      assert(newick::IsNewick(new_newick));
       newicks.push_back(std::make_pair(new_newick, 1));
       continue;  //!OCLINT Sure, this can be avoided, but I do not care about C++98
     }

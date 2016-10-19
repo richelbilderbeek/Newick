@@ -100,7 +100,7 @@ const std::string Test::GetEwensProbability() const
 bool ribi::TestBinaryNewickVector::CanCalculate(const std::string& newick_str, const double theta)
 {
   if (theta <= 0.0) return false;
-  if (!Newick().IsNewick(newick_str))
+  if (!newick::IsNewick(newick_str))
     return false;
   const std::vector<int> newick = Newick().StringToNewick(newick_str);
   if (!Newick().IsUnaryNewick(newick) && !Newick().IsBinaryNewick(newick))
@@ -125,7 +125,7 @@ bool ribi::TestManyDigitNewick::CanCalculate(const std::string& newick_str, cons
   return false;
 
   if (theta <= 0.0) return false;
-  if (!Newick().IsNewick(newick_str)) return false;
+  if (!newick::IsNewick(newick_str)) return false;
   return true;
 }
 
@@ -143,7 +143,7 @@ void ribi::TestManyDigitNewick::Calculate(const std::string& newick_str, const d
 bool ribi::TestNewickVector::CanCalculate(const std::string& newick_str, const double theta)
 {
   if (theta <= 0.0) return false;
-  if (!Newick().IsNewick(newick_str)) return false;
+  if (!newick::IsNewick(newick_str)) return false;
   return true;
 }
 
@@ -161,7 +161,7 @@ void ribi::TestNewickVector::Calculate(const std::string& newick_str, const doub
 bool ribi::TestSortedBinaryNewickVector::CanCalculate(const std::string& newick_str, const double theta)
 {
   if (theta <= 0.0) return false;
-  if (!Newick().IsNewick(newick_str))
+  if (!newick::IsNewick(newick_str))
     return false;
   const std::vector<int> newick = Newick().StringToNewick(newick_str);
   if (!Newick().IsUnaryNewick(newick) && !Newick().IsBinaryNewick(newick))
@@ -184,7 +184,7 @@ void ribi::TestSortedBinaryNewickVector::Calculate(const std::string& newick_str
 bool ribi::TestTwoDigitNewick::CanCalculate(const std::string& newick_str, const double theta)
 {
   if (theta <= 0.0) return false;
-  if (!Newick().IsNewick(newick_str))
+  if (!newick::IsNewick(newick_str))
     return false;
   const std::vector<int> newick = Newick().StringToNewick(newick_str);
   if (!Newick().IsUnaryNewick(newick) && !Newick().IsBinaryNewick(newick))

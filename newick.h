@@ -89,11 +89,6 @@ struct Newick
   ///using the Ewens formula
   double CalcProbabilitySimpleNewick(const std::vector<int>& v,const double theta);
 
-  ///CheckNewick checks if a std::string is a valid Newick.
-  ///If this std::string is not a valid Newick,
-  ///CheckNewick throws an exception with a detailed description
-  ///From http://www.richelbilderbeek.nl/CppCheckNewick.htm
-  void CheckNewick(const std::string& s) const;
 
   ///CreateInvalidNewicks creates std::strings
   ///that cannot and must not be converted to a Newick
@@ -178,11 +173,6 @@ struct Newick
   std::vector<std::vector<int> > GetSimplerBinaryNewicks(
     const std::vector<int>& n) noexcept;
 
-  ///GetSimplerNewicks creates simpler, derived Newicks from a Newick.
-  ///From http://www.richelbilderbeek.nl/CppGetSimplerNewicks.htm
-  std::vector<std::vector<int> > GetSimplerNewicks(
-    const std::vector<int>& n) const noexcept;
-
   ///GetSimplerNewicksFrequencyPairs creates simpler, derived Newicks from a Newick.
   ///Its simpler Newicks are identical to those created by GetSimplerNewicks.
   ///From http://www.richelbilderbeek.nl/CppGetSimplerNewicksFrequencyPairs.htm
@@ -228,16 +218,6 @@ struct Newick
   ///that is: there is only one node.
   ///From http://www.richelbilderbeek.nl/CppIsUnaryNewick.htm
   bool IsUnaryNewick(const std::vector<int>& v) const noexcept;
-
-  ///IsNewick returns true if a std::string is a valid Newick
-  ///and false otherwise.
-  ///From http://www.richelbilderbeek.nl/CppIsNewick.htm
-  bool IsNewick(const std::string& s) const noexcept;
-
-  ///IsNewick returns true if a std::vector<int> is a valid Newick
-  ///and false otherwise.
-  ///From http://www.richelbilderbeek.nl/CppIsNewick.htm
-  bool IsNewick(const std::vector<int>& v) const noexcept;
 
   ///IsSimple returns true if the Newick std::vector contains
   ///leaves only. For example, the Newick '(1,2,3)' is simple,
@@ -444,6 +424,22 @@ std::vector<T> CreateVector(const T& a, const T& b, const T& c)
   v.push_back(c);
   return v;
 }
+
+///GetSimplerNewicks creates simpler, derived Newicks from a Newick.
+///From http://www.richelbilderbeek.nl/CppGetSimplerNewicks.htm
+std::vector<std::vector<int>> GetSimplerNewicks(
+  const std::vector<int>& n
+) noexcept;
+
+///IsNewick returns true if a std::string is a valid Newick
+///and false otherwise.
+///From http://www.richelbilderbeek.nl/CppIsNewick.htm
+bool IsNewick(const std::string& s) noexcept;
+
+///IsNewick returns true if a std::vector<int> is a valid Newick
+///and false otherwise.
+///From http://www.richelbilderbeek.nl/CppIsNewick.htm
+bool IsNewick(const std::vector<int>& v) noexcept;
 
 ///Returns true if c is a number or comma
 bool IsNumberOrComma(const char c) noexcept;

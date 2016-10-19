@@ -96,7 +96,7 @@ double ribi::Newick::CalcDenominator(const std::vector<int>& v,const double thet
 
 BigInteger ribi::Newick::CalcNumOfCombinationsBinary(const std::vector<int>& v) const
 {
-  assert(IsNewick(v));
+  assert(newick::IsNewick(v));
 
   //Get all positives
   std::vector<BigInteger> positives;
@@ -136,7 +136,7 @@ BigInteger ribi::Newick::CalcNumOfCombinationsBinary(const std::vector<int>& v) 
 
 BigInteger ribi::Newick::CalcNumOfSymmetriesBinary(std::vector<int> v) const
 {
-  assert(IsNewick(v));
+  assert(newick::IsNewick(v));
   assert(IsBinaryNewick(v));
   if (v.size() == 3) return 0;
   if (v.size() == 4) return (v[1] > 0 && v[1]==v[2] ? 1 : 0);
@@ -217,7 +217,7 @@ double ribi::Newick::CalcProbabilitySimpleNewick(
   const std::vector<int>& v,
   const double theta)
 {
-  assert(IsNewick(v));
+  assert(newick::IsNewick(v));
   assert(IsSimple(v));
   const int sz = v.size();
 
@@ -698,7 +698,7 @@ std::vector<int> ribi::Newick::CreateRandomBinaryNewickVector(const int n,const 
     assert(std::count(v.begin(),v.end(),static_cast<int>(bracket_open ))
         == std::count(v.begin(),v.end(),static_cast<int>(bracket_close)));
   }
-  assert(IsNewick(v));
+  assert(newick::IsNewick(v));
   return v;
 }
 
@@ -867,7 +867,7 @@ int ribi::Newick::FindPosBefore(const std::vector<int>& v,const int x, const int
 
 std::vector<int> ribi::Newick::GetDepth(const std::vector<int>& n) const noexcept
 {
-  assert(IsNewick(n));
+  assert(newick::IsNewick(n));
   std::vector<int> v;
   int depth = -1;
   for(const int& x: n)
@@ -896,7 +896,7 @@ std::vector<boost::tuple<std::string,double,double> > ribi::Newick::GetKnownProb
 
 int ribi::Newick::GetLeafMaxArity(const std::vector<int>& n) const noexcept
 {
-  assert(IsNewick(n));
+  assert(newick::IsNewick(n));
   const int size = boost::numeric_cast<int>(n.size());
   if (IsSimple(n)) return size - 2;
 
@@ -928,7 +928,7 @@ std::vector<std::vector<int> >
 std::pair<std::vector<int>,std::vector<int> >
   ribi::Newick::GetRootBranchesBinary(const std::vector<int>& n) noexcept
 {
-  assert(IsNewick(n));
+  assert(newick::IsNewick(n));
   assert(IsBinaryNewick(n) && "Only binary Newicks can have two roots");
 
   assert(n[0] == bracket_open);
@@ -966,7 +966,7 @@ std::pair<std::vector<int>,std::vector<int> >
     {
       rhs = newick::Surround(rhs);
     }
-    if (IsNewick(lhs) && IsNewick(rhs))
+    if (newick::IsNewick(lhs) && newick::IsNewick(rhs))
     {
       return std::make_pair(lhs,rhs);
     }
@@ -978,7 +978,7 @@ std::pair<std::vector<int>,std::vector<int> >
 std::vector<std::vector<int> >
   ribi::Newick::GetSimplerBinaryNewicks(const std::vector<int>& n) noexcept
 {
-  assert(IsNewick(n));
+  assert(newick::IsNewick(n));
   assert(IsUnaryNewick(n) || IsBinaryNewick(n));
 
   std::vector<std::vector<int> > newicks;
@@ -998,7 +998,7 @@ std::vector<std::vector<int> >
       {
         std::vector<int> next(n);
         --next[1];
-        assert(IsNewick(next));
+        assert(newick::IsNewick(next));
         newicks.push_back(next);
       }
       return newicks;
@@ -1012,14 +1012,14 @@ std::vector<std::vector<int> >
             n[2]+1,
             static_cast<int>(bracket_close)
           );
-      assert(IsNewick(next));
+      assert(newick::IsNewick(next));
       newicks.push_back(next);
     }
     else
     {
       std::vector<int> next(n);
       --next[1];
-      assert(IsNewick(next));
+      assert(newick::IsNewick(next));
       newicks.push_back(next);
     }
     if (n[2] == 1)
@@ -1030,14 +1030,14 @@ std::vector<std::vector<int> >
             n[1]+1,
             static_cast<int>(bracket_close)
           );
-      assert(IsNewick(next));
+      assert(newick::IsNewick(next));
       newicks.push_back(next);
     }
     else
     {
       std::vector<int> next(n);
       --next[2];
-      assert(IsNewick(next));
+      assert(newick::IsNewick(next));
       newicks.push_back(next);
     }
     return newicks;
@@ -1067,15 +1067,7 @@ std::vector<std::vector<int> >
         next.push_back(new_value);
         assert(n[i+2] < 0);
         std::copy(n.begin() + i + 3,n.end(),std::back_inserter(next));
-        #ifndef NDEBUG
-        if (!IsNewick(next))
-        {
-          std::cerr << DumbNewickToString(n)  << '\n';
-          std::cerr << DumbNewickToString(next) << '\n';
-          InspectInvalidNewick(std::cerr,next);
-        }
-        #endif
-        assert(IsNewick(next));
+        assert(newick::IsNewick(next));
         newicks.push_back(next);
       }
       else
@@ -1087,7 +1079,7 @@ std::vector<std::vector<int> >
         next.push_back(new_value);
         assert(n[i+1] < 0);
         std::copy(n.begin() + i + 2,n.end(),std::back_inserter(next));
-        assert(IsNewick(next));
+        assert(newick::IsNewick(next));
         newicks.push_back(next);
       }
     }
@@ -1095,7 +1087,7 @@ std::vector<std::vector<int> >
     {
       std::vector<int> next = n;
       --next[i];
-      assert(IsNewick(next));
+      assert(newick::IsNewick(next));
       newicks.push_back(next);
     }
   }
@@ -1103,21 +1095,23 @@ std::vector<std::vector<int> >
 }
 
 std::vector<std::vector<int> >
-  ribi::Newick::GetSimplerNewicks(const std::vector<int>& n) const noexcept
+  ribi::newick::GetSimplerNewicks(const std::vector<int>& n) noexcept
 {
-  assert(IsNewick(n));
+  assert(newick::IsNewick(n));
 
-  const std::vector<int> depths = GetDepth(n);
+  const std::vector<int> depths = Newick().GetDepth(n);
 
-  std::vector<std::vector<int> > newicks;
+  std::vector<std::vector<int>> newicks;
 
   const int size = boost::numeric_cast<int>(n.size());
+  //Go through all positions
   for (int i = 0; i!=size; ++i)
   {
     assert(i >= 0);
     assert(i < size);
     if (n[i] < 1) continue;
     assert(n[i] > 0);
+    //If a frequency is above one, it is easy to create the simpler newicks
     if (n[i] > 1)
     {
       std::vector<int> new_newick(n);
@@ -1125,6 +1119,7 @@ std::vector<std::vector<int> >
       newicks.push_back(new_newick);
       continue;
     }
+    //If a frequency is one, the Newick needs to be simplified
     assert(n[i] == 1); //Most difficult...
     const int depth = depths[i];
     //j must first decrement, later increment with the same code
@@ -1207,7 +1202,7 @@ std::vector<std::pair<std::vector<int>,int> >
   ribi::Newick::GetSimplerBinaryNewicksFrequencyPairs(
   const std::vector<int>& n) noexcept
 {
-  assert(IsNewick(n));
+  assert(newick::IsNewick(n));
   assert(IsBinaryNewick(n));
 
   //If newick is simple (by counting the number of opening brackets),
@@ -1235,7 +1230,7 @@ std::vector<std::pair<std::vector<int>,int> >
     {
       std::vector<int> next(n);
       --next[1];
-      assert(IsNewick(next));
+      assert(newick::IsNewick(next));
       v.push_back(std::make_pair(next,n[1]));
     }
     return v;
@@ -1249,14 +1244,14 @@ std::vector<std::pair<std::vector<int>,int> >
           n[2]+1,
           static_cast<int>(bracket_close)
         );
-    assert(IsNewick(next));
+    assert(newick::IsNewick(next));
     v.push_back(std::make_pair(next,1));
   }
   else
   {
     std::vector<int> next(n);
     --next[1];
-    assert(IsNewick(next));
+    assert(newick::IsNewick(next));
     v.push_back(std::make_pair(next,n[1]));
   }
   if (n[2] == 1)
@@ -1267,14 +1262,14 @@ std::vector<std::pair<std::vector<int>,int> >
           n[1]+1,
           static_cast<int>(bracket_close)
         );
-    assert(IsNewick(next));
+    assert(newick::IsNewick(next));
     v.push_back(std::make_pair(next,1));
   }
   else
   {
     std::vector<int> next(n);
     --next[2];
-    assert(IsNewick(next));
+    assert(newick::IsNewick(next));
     v.push_back(std::make_pair(next,n[2]));
   }
   return v;
@@ -1310,7 +1305,7 @@ std::vector<std::pair<std::vector<int>,int> >
         next.push_back(new_value);
         assert(n[i+2] < 0);
         std::copy(n.begin() + i + 3,n.end(),std::back_inserter(next));
-        assert(IsNewick(next));
+        assert(newick::IsNewick(next));
         v.push_back(std::make_pair(next,x));
       }
       else
@@ -1322,7 +1317,7 @@ std::vector<std::pair<std::vector<int>,int> >
         next.push_back(new_value);
         assert(n[i+1] < 0);
         std::copy(n.begin() + i + 2,n.end(),std::back_inserter(next));
-        assert(IsNewick(next));
+        assert(newick::IsNewick(next));
         v.push_back(std::make_pair(next,x));
       }
     }
@@ -1330,7 +1325,7 @@ std::vector<std::pair<std::vector<int>,int> >
     {
       std::vector<int> next = n;
       --next[i];
-      assert(IsNewick(next));
+      assert(newick::IsNewick(next));
       v.push_back(std::make_pair(next,x));
     }
   }
@@ -1364,11 +1359,11 @@ void ribi::Newick::InspectInvalidNewick(std::ostream& os, const std::vector<int>
   }
 }
 
-bool ribi::Newick::IsNewick(const std::string& s) const noexcept
+bool ribi::newick::IsNewick(const std::string& s) noexcept
 {
   try
   {
-    newick::CheckNewick(s);
+    CheckNewick(s);
   }
   catch (const std::exception&)
   {
@@ -1385,7 +1380,7 @@ bool ribi::newick::IsNumberOrComma(const char c) noexcept
 
 bool ribi::Newick::IsSimple(const std::vector<int>& v) const noexcept
 {
-  assert(IsNewick(v));
+  assert(newick::IsNewick(v));
   //A Newick is simple if it contains no '(' after the initial one
   return std::count(
     v.begin()+1,v.end(),
@@ -1395,7 +1390,7 @@ bool ribi::Newick::IsSimple(const std::vector<int>& v) const noexcept
 
 bool ribi::Newick::IsBinaryNewick(std::vector<int> v) const noexcept
 {
-  assert(IsNewick(v));
+  assert(newick::IsNewick(v));
   if (IsUnaryNewick(v)) return false;
 
   while (1)
@@ -1412,11 +1407,11 @@ bool ribi::Newick::IsBinaryNewick(std::vector<int> v) const noexcept
   }
 }
 
-bool ribi::Newick::IsNewick(const std::vector<int>& v) const noexcept
+bool ribi::newick::IsNewick(const std::vector<int>& v) noexcept
 {
   try
   {
-    newick::CheckNewick(v);
+    CheckNewick(v);
   }
   catch (...)
   {
@@ -1430,7 +1425,7 @@ bool ribi::Newick::IsNewick(const std::vector<int>& v) const noexcept
 ///From http://www.richelbilderbeek.nl/CppIsTrinaryNewick.htm
 bool ribi::Newick::IsTrinaryNewick(std::vector<int> v) noexcept
 {
-  assert(IsNewick(v));
+  assert(newick::IsNewick(v));
   if (IsUnaryNewick(v)) return false;
   if (IsBinaryNewick(v)) return false;
 
@@ -1455,7 +1450,7 @@ bool ribi::Newick::IsTrinaryNewick(std::vector<int> v) noexcept
 
 bool ribi::Newick::IsUnaryNewick(const std::vector<int>& v) const noexcept
 {
-  assert(IsNewick(v));
+  assert(newick::IsNewick(v));
   return v.size() == 3
     && v[0] == Newick::bracket_open
     && v[1] >  0
@@ -1513,7 +1508,7 @@ std::vector<int> ribi::Newick::ReplaceLeave(
   const int value
 ) const
 {
-  assert(IsNewick(newick) && "Only a valid Newick can have its leaves replaced");
+  assert(newick::IsNewick(newick) && "Only a valid Newick can have its leaves replaced");
   assert(!IsSimple(newick) && "There must a leaf to simplify");
   typedef std::vector<int>::const_iterator Iterator;
   const Iterator end = newick.end();
@@ -1531,7 +1526,7 @@ std::vector<int> ribi::Newick::ReplaceLeave(
         std::vector<int> new_newick(newick.begin(),from);
         new_newick.push_back(value);
         std::copy(to + 1,newick.end(),std::back_inserter(new_newick));
-        assert(IsNewick(new_newick));
+        assert(newick::IsNewick(new_newick));
         return new_newick;
       }
     }
@@ -1542,7 +1537,7 @@ std::vector<int> ribi::Newick::ReplaceLeave(
 
 std::vector<int> ribi::Newick::StringToNewick(const std::string& newick) const
 {
-  assert(IsNewick(newick));
+  assert(newick::IsNewick(newick));
   assert(!newick.empty()
     && "s must not be empty");
   assert(newick[              0]=='('

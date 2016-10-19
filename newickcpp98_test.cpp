@@ -34,9 +34,9 @@ BOOST_AUTO_TEST_CASE(ribi_newickcpp98_all)
     const std::vector<std::string> v = newick::CreateValidNewicks();
     for(const std::string& s: v)
     {
-      BOOST_CHECK(Newick().IsNewick(s));
+      BOOST_CHECK(newick::IsNewick(s));
       const std::vector<int> v = Newick().StringToNewick(s);
-      BOOST_CHECK(Newick().IsNewick(v));
+      BOOST_CHECK(newick::IsNewick(v));
     }
   }
 
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(ribi_newickcpp98_all)
       const std::string debug = "I must be rejected: " + s;
       TRACE(debug);
       #endif
-      BOOST_CHECK(!Newick().IsNewick(s));
+      BOOST_CHECK(!newick::IsNewick(s));
       //Cannot test if std::vector<int> versions are rejected,
       //because Newick().StringToNewick assumes a valid Newick
       //const std::vector<int> v = Newick().StringToNewick(s);

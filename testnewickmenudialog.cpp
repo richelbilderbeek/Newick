@@ -61,7 +61,7 @@ int ribi::TestNewickMenuDialog::ExecuteSpecific(const std::vector<std::string>& 
     }
   }
 
-  if (!ribi::Newick().IsNewick(newick_str))
+  if (!ribi::newick::IsNewick(newick_str))
   {
     std::cout << "Invalid phylogeny\n";
     return 1;

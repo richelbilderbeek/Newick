@@ -89,9 +89,9 @@ BOOST_AUTO_TEST_CASE(ribi_newick_well_formed_newicks_must_be_accepted)
   const std::vector<std::string> v = ribi::newick::CreateValidNewicks();
   for(const std::string& s: v)
   {
-    BOOST_CHECK(ribi::Newick().IsNewick(s));
+    BOOST_CHECK(ribi::newick::IsNewick(s));
     const std::vector<int> v = ribi::Newick().StringToNewick(s);
-    BOOST_CHECK(ribi::Newick().IsNewick(v));
+    BOOST_CHECK(ribi::newick::IsNewick(v));
   }
 }
 
@@ -105,11 +105,11 @@ BOOST_AUTO_TEST_CASE(ribi_newick_ill_formed_newicks_must_be_rejected)
     const std::string debug = "I must be rejected: " + s;
     TRACE(debug);
     #endif
-    BOOST_CHECK(!ribi::Newick().IsNewick(s));
+    BOOST_CHECK(!ribi::newick::IsNewick(s));
     //Cannot test if std::vector<int> versions are rejected,
     //because ribi::Newick().StringToNewick assumes a valid Newick
     //const std::vector<int> v = ribi::Newick().StringToNewick(s);
-    //BOOST_CHECK(!ribi::Newick().IsNewick(v));
+    //BOOST_CHECK(!ribi::newick::IsNewick(v));
   }
 }
 

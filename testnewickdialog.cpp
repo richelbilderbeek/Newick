@@ -90,7 +90,7 @@ void ribi::TestNewickDialog::DoAutoCalculate(
   const std::string& theta_str,
   const std::string& max_complexity_str)
 {
-  if (!Newick().IsNewick(newick_str))
+  if (!newick::IsNewick(newick_str))
   {
     m_text = "Invalid Newick";
     return;
@@ -145,7 +145,7 @@ void ribi::TestNewickDialog::DoCalculate(
   const double theta)
 {
   m_table.resize(0);
-  if (!Newick().IsNewick(newick_str))
+  if (!newick::IsNewick(newick_str))
   {
     m_text = "Invalid Newick";
     return;
