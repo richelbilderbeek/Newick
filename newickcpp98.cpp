@@ -209,20 +209,20 @@ std::vector<std::vector<int> > //!OCLINT Yes, too long, but I do not care about 
   ribi::NewickCpp98::GetRootBranches(const std::vector<int>& n)
 {
   assert(newick::IsNewick(n));
-  assert(!Newick().IsUnaryNewick(n));
+  assert(!newick::IsUnaryNewick(n));
 
   const int size = boost::numeric_cast<int>(n.size());
   std::vector<std::vector<int> > v;
 
-  if (Newick().IsSimple(n))
+  if (newick::IsSimple(n))
   {
     for (int i=1; i!=size-1; ++i) //Skip brackets
     {
       v.push_back(
         newick::CreateVector(
-          static_cast<int>(Newick::bracket_open),
+          static_cast<int>(newick::bracket_open),
           n[i],
-          static_cast<int>(Newick::bracket_close)
+          static_cast<int>(newick::bracket_close)
         )
       );
     }
@@ -231,8 +231,8 @@ std::vector<std::vector<int> > //!OCLINT Yes, too long, but I do not care about 
     return v;
   }
   //Complex newick
-  assert(!Newick().IsSimple(n));
-  const std::vector<int> depth = Newick().GetDepth(n);
+  assert(!newick::IsSimple(n));
+  const std::vector<int> depth = newick::GetDepth(n);
 
   assert(depth.size() == n.size());
   //Search for open and closing brackets in depth 1
@@ -247,14 +247,14 @@ std::vector<std::vector<int> > //!OCLINT Yes, too long, but I do not care about 
       assert(newick::IsNewick(v.back()));
       continue;
     }
-    if (depth[i] != 1 || n[i]!=Newick::bracket_open) continue;
+    if (depth[i] != 1 || n[i]!=newick::bracket_open) continue;
     for (int j=i+1; j!=size; ++j)
     {
-      if (depth[j] != 1 || n[j]!=Newick::bracket_close) continue;
+      if (depth[j] != 1 || n[j]!=newick::bracket_close) continue;
       std::vector<int> w;
-      w.push_back(Newick::bracket_open);
+      w.push_back(newick::bracket_open);
       std::copy(n.begin() + i + 1,n.begin() + j,std::back_inserter(w));
-      w.push_back(Newick::bracket_close);
+      w.push_back(newick::bracket_close);
       assert(newick::IsNewick(w));
       v.push_back(w);
       //Set from index i after current end
@@ -275,7 +275,7 @@ std::vector<std::pair<std::vector<int>,int> > //!OCLINT Yes, too long, but I do 
   assert(newick::IsNewick(n));
 
   std::vector<std::pair<std::vector<int>,int> > newicks;
-  const std::vector<int> depths = Newick().GetDepth(n);
+  const std::vector<int> depths = newick::GetDepth(n);
 
 
   const int size = boost::numeric_cast<int>(n.size());
@@ -334,8 +334,8 @@ std::vector<std::pair<std::vector<int>,int> > //!OCLINT Yes, too long, but I do 
       {
         const int index_bracket_open  = std::min(i,j) - 1;
         const int index_bracket_close = std::max(i,j) + 1;
-        if ( new_newick_with_zero[index_bracket_open]  == Newick::bracket_open
-          && new_newick_with_zero[index_bracket_close] == Newick::bracket_close)
+        if ( new_newick_with_zero[index_bracket_open]  == newick::bracket_open
+          && new_newick_with_zero[index_bracket_close] == newick::bracket_close)
         {
           new_newick_with_zero[index_bracket_open]  = 0;
           new_newick_with_zero[index_bracket_close] = 0;
@@ -349,8 +349,8 @@ std::vector<std::pair<std::vector<int>,int> > //!OCLINT Yes, too long, but I do 
         std::back_inserter(new_newick),
         0);
       //Add brackets if these are removed
-      if (new_newick.front() != Newick::bracket_open
-        || new_newick.back() != Newick::bracket_close)
+      if (new_newick.front() != newick::bracket_open
+        || new_newick.back() != newick::bracket_close)
       {
         new_newick = newick::Surround(new_newick);
       }

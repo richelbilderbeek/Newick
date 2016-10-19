@@ -61,7 +61,7 @@ const ElementType Accumulate_if(
   return init;
 }
 
-BigInteger ribi::Newick::CalcComplexity(const std::vector<int>& v)
+BigInteger ribi::newick::CalcComplexity(const std::vector<int>& v)
 {
   if (v.empty()) return 0;
   //assert(IsNewick(v));
@@ -79,7 +79,7 @@ BigInteger ribi::Newick::CalcComplexity(const std::vector<int>& v)
   return complexity;
 }
 
-double ribi::Newick::CalcDenominator(const std::vector<int>& v,const double theta)
+double ribi::newick::CalcDenominator(const std::vector<int>& v,const double theta)
 {
   int sum_above_zero = 0;
   int sum_above_one  = 0;
@@ -94,9 +94,9 @@ double ribi::Newick::CalcDenominator(const std::vector<int>& v,const double thet
   ;
 }
 
-BigInteger ribi::Newick::CalcNumOfCombinationsBinary(const std::vector<int>& v) const
+BigInteger ribi::newick::CalcNumOfCombinationsBinary(const std::vector<int>& v)
 {
-  assert(newick::IsNewick(v));
+  assert(IsNewick(v));
 
   //Get all positives
   std::vector<BigInteger> positives;
@@ -134,9 +134,9 @@ BigInteger ribi::Newick::CalcNumOfCombinationsBinary(const std::vector<int>& v) 
   return numerator;
 }
 
-BigInteger ribi::Newick::CalcNumOfSymmetriesBinary(std::vector<int> v) const
+BigInteger ribi::newick::CalcNumOfSymmetriesBinary(std::vector<int> v)
 {
-  assert(newick::IsNewick(v));
+  assert(IsNewick(v));
   assert(IsBinaryNewick(v));
   if (v.size() == 3) return 0;
   if (v.size() == 4) return (v[1] > 0 && v[1]==v[2] ? 1 : 0);
@@ -213,7 +213,7 @@ BigInteger ribi::Newick::CalcNumOfSymmetriesBinary(std::vector<int> v) const
   }
 }
 
-double ribi::Newick::CalcProbabilitySimpleNewick(
+double ribi::newick::CalcProbabilitySimpleNewick(
   const std::vector<int>& v,
   const double theta)
 {
@@ -582,7 +582,7 @@ void ribi::newick::CheckNewick(const std::vector<int>& v)
   }
 }
 
-std::vector<std::string> ribi::Newick::CreateInvalidNewicks() noexcept
+std::vector<std::string> ribi::newick::CreateInvalidNewicks() noexcept
 {
   std::vector<std::string> v;
   v.push_back("");
@@ -636,13 +636,13 @@ std::vector<std::string> ribi::Newick::CreateInvalidNewicks() noexcept
   return v;
 }
 
-std::string ribi::Newick::CreateRandomNewick(const int n,const int max) noexcept
+std::string ribi::newick::CreateRandomNewick(const int n,const int max) noexcept
 {
   const std::vector<int> v = CreateRandomBinaryNewickVector(n,max);
   return NewickToString(v);
 }
 
-std::vector<int> ribi::Newick::CreateRandomBinaryNewickVector(const int n,const int max) noexcept
+std::vector<int> ribi::newick::CreateRandomBinaryNewickVector(const int n,const int max) noexcept
 {
   assert(n>0);
   assert(max>1);
@@ -772,7 +772,7 @@ std::vector<std::string> ribi::newick::CreateValidUnaryNewicks() noexcept
   };
 }
 
-std::string ribi::Newick::DumbNewickToString(const std::vector<int>& v) noexcept
+std::string ribi::newick::DumbNewickToString(const std::vector<int>& v) noexcept
 {
   std::string s;
   s.reserve(2 * v.size()); //Just a guess
@@ -812,16 +812,16 @@ std::string ribi::Newick::DumbNewickToString(const std::vector<int>& v) noexcept
   return s;
 }
 
-std::vector<int> ribi::Newick::Factorial(const std::vector<int>& v_original) noexcept
+std::vector<int> ribi::newick::Factorial(const std::vector<int>& v_original) noexcept
 {
   std::vector<int> v(v_original);
   std::transform(v.begin(),v.end(),v.begin(),
-    [](const int i) { return Newick().Factorial(i); }
+    [](const int i) { return Factorial(i); }
   );
   return v;
 }
 
-int ribi::Newick::Factorial(const int n) noexcept
+int ribi::newick::Factorial(const int n) noexcept
 {
   assert(n>=0);
   int result = 1;
@@ -832,7 +832,7 @@ int ribi::Newick::Factorial(const int n) noexcept
   return result;
 }
 
-BigInteger ribi::Newick::FactorialBigInt(const int n) const noexcept
+BigInteger ribi::newick::FactorialBigInt(const int n) noexcept
 {
   assert(n>=0);
   BigInteger result = 1;
@@ -843,7 +843,7 @@ BigInteger ribi::Newick::FactorialBigInt(const int n) const noexcept
   return result;
 }
 
-int ribi::Newick::FindPosAfter(const std::vector<int>& v,const int x, const int index) noexcept
+int ribi::newick::FindPosAfter(const std::vector<int>& v,const int x, const int index) noexcept
 {
   assert(!v.empty());
   const int sz = v.size();
@@ -856,7 +856,7 @@ int ribi::Newick::FindPosAfter(const std::vector<int>& v,const int x, const int 
   return sz;
 }
 
-int ribi::Newick::FindPosBefore(const std::vector<int>& v,const int x, const int index) noexcept
+int ribi::newick::FindPosBefore(const std::vector<int>& v,const int x, const int index) noexcept
 {
   for (int i=index-1; i!=-1; --i)
   {
@@ -865,22 +865,22 @@ int ribi::Newick::FindPosBefore(const std::vector<int>& v,const int x, const int
   return -1;
 }
 
-std::vector<int> ribi::Newick::GetDepth(const std::vector<int>& n) const noexcept
+std::vector<int> ribi::newick::GetDepth(const std::vector<int>& n) noexcept
 {
-  assert(newick::IsNewick(n));
+  assert(IsNewick(n));
   std::vector<int> v;
   int depth = -1;
   for(const int& x: n)
   {
-    if (x == Newick::bracket_open) ++depth;
+    if (x == newick::bracket_open) ++depth;
     v.push_back(depth);
-    if (x == Newick::bracket_close) --depth;
+    if (x == newick::bracket_close) --depth;
   }
   assert(n.size() == v.size());
   return v;
 }
 
-std::vector<int> ribi::Newick::GetFactorialTerms(const int n) noexcept
+std::vector<int> ribi::newick::GetFactorialTerms(const int n) noexcept
 {
   assert(n > 0);
   std::vector<int> v(n);
@@ -889,26 +889,26 @@ std::vector<int> ribi::Newick::GetFactorialTerms(const int n) noexcept
   return v;
 }
 
-std::vector<boost::tuple<std::string,double,double> > ribi::Newick::GetKnownProbabilities() noexcept
+std::vector<boost::tuple<std::string,double,double> > ribi::newick::GetKnownProbabilities() noexcept
 {
   return NewickCpp98().GetKnownProbabilities();
 }
 
-int ribi::Newick::GetLeafMaxArity(const std::vector<int>& n) const noexcept
+int ribi::newick::GetLeafMaxArity(const std::vector<int>& n) noexcept
 {
-  assert(newick::IsNewick(n));
+  assert(IsNewick(n));
   const int size = boost::numeric_cast<int>(n.size());
   if (IsSimple(n)) return size - 2;
 
   int max = 0;
   for (int from = 0; from!=size; ++from)
   {
-    if (n[from] != Newick::bracket_open) continue;
+    if (n[from] != newick::bracket_open) continue;
     for (int to = from+1; to!=size; ++to)
     {
-      if (n[to] == Newick::bracket_open) break;
+      if (n[to] == newick::bracket_open) break;
       if (n[to]  > 0) continue;
-      if (n[to] == Newick::bracket_close)
+      if (n[to] == newick::bracket_close)
       {
         assert(from < to);
         max = to - from - 1;
@@ -920,15 +920,15 @@ int ribi::Newick::GetLeafMaxArity(const std::vector<int>& n) const noexcept
 }
 
 std::vector<std::vector<int> >
-  ribi::Newick::GetRootBranches(const std::vector<int>& n) noexcept
+  ribi::newick::GetRootBranches(const std::vector<int>& n) noexcept
 {
   return NewickCpp98().GetRootBranches(n);
 }
 
 std::pair<std::vector<int>,std::vector<int> >
-  ribi::Newick::GetRootBranchesBinary(const std::vector<int>& n) noexcept
+  ribi::newick::GetRootBranchesBinary(const std::vector<int>& n) noexcept
 {
-  assert(newick::IsNewick(n));
+  assert(IsNewick(n));
   assert(IsBinaryNewick(n) && "Only binary Newicks can have two roots");
 
   assert(n[0] == bracket_open);
@@ -956,13 +956,13 @@ std::pair<std::vector<int>,std::vector<int> >
   {
     std::vector<int> lhs(n.begin() + 1,i);
     std::vector<int> rhs(i,n.end() - 1);
-    if ( lhs.front() != Newick::bracket_open
-      || lhs.back()  != Newick::bracket_close)
+    if ( lhs.front() != newick::bracket_open
+      || lhs.back()  != newick::bracket_close)
     {
       lhs = newick::Surround(lhs);
     }
-    if ( rhs.front() != Newick::bracket_open
-      || rhs.back()  != Newick::bracket_close)
+    if ( rhs.front() != newick::bracket_open
+      || rhs.back()  != newick::bracket_close)
     {
       rhs = newick::Surround(rhs);
     }
@@ -976,9 +976,9 @@ std::pair<std::vector<int>,std::vector<int> >
 }
 
 std::vector<std::vector<int> >
-  ribi::Newick::GetSimplerBinaryNewicks(const std::vector<int>& n) noexcept
+  ribi::newick::GetSimplerBinaryNewicks(const std::vector<int>& n) noexcept
 {
-  assert(newick::IsNewick(n));
+  assert(IsNewick(n));
   assert(IsUnaryNewick(n) || IsBinaryNewick(n));
 
   std::vector<std::vector<int> > newicks;
@@ -1097,7 +1097,7 @@ std::vector<std::vector<int> >
 std::vector<std::vector<int>>
   ribi::newick::GetSimplerNewicksEasy(const std::vector<int>& n) noexcept
 {
-  assert(newick::IsNewick(n));
+  assert(IsNewick(n));
   std::vector<std::vector<int>> newicks;
   const int size = boost::numeric_cast<int>(n.size());
 
@@ -1121,10 +1121,10 @@ std::vector<std::vector<int>>
 std::vector<std::vector<int>>
   ribi::newick::GetSimplerNewicksHard(const std::vector<int>& n) noexcept
 {
-  assert(newick::IsNewick(n));
+  assert(IsNewick(n));
   std::vector<std::vector<int>> newicks;
   const int size = boost::numeric_cast<int>(n.size());
-  const std::vector<int> depths = Newick().GetDepth(n);
+  const std::vector<int> depths = GetDepth(n);
 
   //Go through all positions
   for (int i = 0; i!=size; ++i)
@@ -1173,8 +1173,8 @@ std::vector<std::vector<int>>
       {
         const int index_bracket_open  = std::min(i,j) - 1;
         const int index_bracket_close = std::max(i,j) + 1;
-        if ( new_newick_with_zero[index_bracket_open]  == Newick::bracket_open
-          && new_newick_with_zero[index_bracket_close] == Newick::bracket_close)
+        if ( new_newick_with_zero[index_bracket_open]  == newick::bracket_open
+          && new_newick_with_zero[index_bracket_close] == newick::bracket_close)
         {
           new_newick_with_zero[index_bracket_open]  = 0;
           new_newick_with_zero[index_bracket_close] = 0;
@@ -1188,8 +1188,8 @@ std::vector<std::vector<int>>
         std::back_inserter(new_newick),
         0);
       //Add brackets if these are removed
-      if (new_newick.front() != Newick::bracket_open
-        || new_newick.back() != Newick::bracket_close)
+      if (new_newick.front() != newick::bracket_open
+        || new_newick.back() != newick::bracket_close)
       {
         new_newick = newick::Surround(new_newick);
       }
@@ -1204,7 +1204,7 @@ std::vector<std::vector<int>>
 std::vector<std::vector<int>>
   ribi::newick::GetSimplerNewicks(const std::vector<int>& n) noexcept
 {
-  assert(newick::IsNewick(n));
+  assert(IsNewick(n));
   std::vector<std::vector<int>> newicks = GetSimplerNewicksEasy(n);
   const std::vector<std::vector<int>> hard_newicks = GetSimplerNewicksHard(n);
   std::copy(
@@ -1225,10 +1225,10 @@ std::vector<std::pair<std::vector<int>,int> >
 
 
 std::vector<std::pair<std::vector<int>,int> >
-  ribi::Newick::GetSimplerBinaryNewicksFrequencyPairs(
+  ribi::newick::GetSimplerBinaryNewicksFrequencyPairs(
   const std::vector<int>& n) noexcept
 {
-  assert(newick::IsNewick(n));
+  assert(IsNewick(n));
   assert(IsBinaryNewick(n));
 
   //If newick is simple (by counting the number of opening brackets),
@@ -1241,7 +1241,7 @@ std::vector<std::pair<std::vector<int>,int> >
 }
 
 std::vector<std::pair<std::vector<int>,int> >
-  ribi::Newick::GetSimplerBinaryNewicksFrequencyPairsSimple(
+  ribi::newick::GetSimplerBinaryNewicksFrequencyPairsSimple(
   const std::vector<int>& n) noexcept
 {
   //Simple newicks do not need to be simplified
@@ -1302,7 +1302,7 @@ std::vector<std::pair<std::vector<int>,int> >
 }
 
 std::vector<std::pair<std::vector<int>,int> >
-  ribi::Newick::GetSimplerBinaryNewicksFrequencyPairsComplex(
+  ribi::newick::GetSimplerBinaryNewicksFrequencyPairsComplex(
   const std::vector<int>& n) noexcept
 {
   assert(!IsSimple(n));
@@ -1358,20 +1358,21 @@ std::vector<std::pair<std::vector<int>,int> >
   return v;
 }
 
-std::string ribi::Newick::GetVersion() const noexcept
+std::string ribi::newick::GetNewickVersion() noexcept
 {
-  return "1.1";
+  return "2.0";
 }
 
-std::vector<std::string> ribi::Newick::GetVersionHistory() const noexcept
+std::vector<std::string> ribi::newick::GetNewickVersionHistory() noexcept
 {
   return {
     "20xx-xx-xx: Version 1.0: initial version",
-    "2013-05-29: Version 1.1: version history"
+    "2013-05-29: Version 1.1: version history",
+    "2016-10-19: Version 2.0: changed to free functions"
   };
 }
 
-void ribi::Newick::InspectInvalidNewick(std::ostream& os, const std::vector<int>& v) noexcept
+void ribi::newick::InspectInvalidNewick(std::ostream& os, const std::vector<int>& v) noexcept
 {
   os << "InspectInvalidNewick on: "
     << DumbNewickToString(v) << '\n';
@@ -1404,7 +1405,7 @@ bool ribi::newick::IsNumberOrComma(const char c) noexcept
   return s.find(c) != std::string::npos;
 }
 
-bool ribi::Newick::IsSimple(const std::vector<int>& v) const noexcept
+bool ribi::newick::IsSimple(const std::vector<int>& v) noexcept
 {
   assert(newick::IsNewick(v));
   //A Newick is simple if it contains no '(' after the initial one
@@ -1414,7 +1415,7 @@ bool ribi::Newick::IsSimple(const std::vector<int>& v) const noexcept
   ) == 0;
 }
 
-bool ribi::Newick::IsBinaryNewick(std::vector<int> v) const noexcept
+bool ribi::newick::IsBinaryNewick(std::vector<int> v) noexcept
 {
   assert(newick::IsNewick(v));
   if (IsUnaryNewick(v)) return false;
@@ -1429,7 +1430,7 @@ bool ribi::Newick::IsBinaryNewick(std::vector<int> v) const noexcept
       return sz == 4;
     }
     if (GetLeafMaxArity(v) > 2) return false;
-    v = Newick::ReplaceLeave(v,42);
+    v = newick::ReplaceLeave(v,42);
   }
 }
 
@@ -1449,7 +1450,7 @@ bool ribi::newick::IsNewick(const std::vector<int>& v) noexcept
 ///IsTrinaryNewick checks if a Newick is a trinary tree,
 ///that is: each node splits in three or less branches
 ///From http://www.richelbilderbeek.nl/CppIsTrinaryNewick.htm
-bool ribi::Newick::IsTrinaryNewick(std::vector<int> v) noexcept
+bool ribi::newick::IsTrinaryNewick(std::vector<int> v) noexcept
 {
   assert(newick::IsNewick(v));
   if (IsUnaryNewick(v)) return false;
@@ -1470,20 +1471,20 @@ bool ribi::Newick::IsTrinaryNewick(std::vector<int> v) noexcept
     if (leaf_max_arity > 3) return false;
     if (leaf_max_arity == 3) trinarity_found = true;
 
-    v = Newick::ReplaceLeave(v,42);
+    v = newick::ReplaceLeave(v,42);
   }
 }
 
-bool ribi::Newick::IsUnaryNewick(const std::vector<int>& v) const noexcept
+bool ribi::newick::IsUnaryNewick(const std::vector<int>& v) noexcept
 {
   assert(newick::IsNewick(v));
   return v.size() == 3
-    && v[0] == Newick::bracket_open
+    && v[0] == newick::bracket_open
     && v[1] >  0
-    && v[2] == Newick::bracket_close;
+    && v[2] == newick::bracket_close;
 }
 
-std::string ribi::Newick::NewickToString(const std::vector<int>& v) const
+std::string ribi::newick::NewickToString(const std::vector<int>& v)
 {
   assert(v.size() > 2 && "A Newick must at least have one single value");
   assert(v[0] == bracket_open
@@ -1529,24 +1530,24 @@ std::string ribi::Newick::NewickToString(const std::vector<int>& v) const
   return s;
 }
 
-std::vector<int> ribi::Newick::ReplaceLeave(
+std::vector<int> ribi::newick::ReplaceLeave(
   const std::vector<int>& newick,
   const int value
-) const
+)
 {
-  assert(newick::IsNewick(newick) && "Only a valid Newick can have its leaves replaced");
+  assert(IsNewick(newick) && "Only a valid Newick can have its leaves replaced");
   assert(!IsSimple(newick) && "There must a leaf to simplify");
   typedef std::vector<int>::const_iterator Iterator;
   const Iterator end = newick.end();
   for (Iterator from = newick.begin(); from!=end; ++from)
   {
-    if (*from != Newick::bracket_open) continue;
+    if (*from != newick::bracket_open) continue;
 
     for (Iterator to = from + 1; to!=end; ++to)
     {
       if (*to > 0) continue;
-      if (*to == Newick::bracket_open) break;
-      if (*to == Newick::bracket_close)
+      if (*to == newick::bracket_open) break;
+      if (*to == newick::bracket_close)
       {
         //Found
         std::vector<int> new_newick(newick.begin(),from);
@@ -1561,9 +1562,9 @@ std::vector<int> ribi::Newick::ReplaceLeave(
   throw std::logic_error("Should not get here");
 }
 
-std::vector<int> ribi::Newick::StringToNewick(const std::string& newick) const
+std::vector<int> ribi::newick::StringToNewick(const std::string& newick)
 {
-  assert(newick::IsNewick(newick));
+  assert(IsNewick(newick));
   assert(!newick.empty()
     && "s must not be empty");
   assert(newick[              0]=='('
@@ -1607,17 +1608,17 @@ std::vector<int> ribi::Newick::StringToNewick(const std::string& newick) const
 std::vector<int> ribi::newick::Surround(const std::vector<int>& newick) noexcept
 {
   std::vector<int> new_newick;
-  new_newick.push_back(Newick::bracket_open);
+  new_newick.push_back(newick::bracket_open);
   std::copy(newick.begin(),newick.end(),std::back_inserter(new_newick));
-  new_newick.push_back(Newick::bracket_close);
+  new_newick.push_back(newick::bracket_close);
   return new_newick;
 }
 
 std::vector<int> ribi::newick::Surround(const int f) noexcept
 {
   return CreateVector(
-    static_cast<int>(Newick::bracket_open),
+    static_cast<int>(newick::bracket_open),
     f,
-    static_cast<int>(Newick::bracket_close)
+    static_cast<int>(newick::bracket_close)
   );
 }

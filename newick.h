@@ -39,203 +39,192 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 namespace ribi {
 
-///namespace Newick contains general Newick functions,
-///not using an Newick class
-struct Newick
-{
-  enum { bracket_open  = -1 };
-  enum { bracket_close = -2 };
-  enum { comma         = -3 };
-  enum { new_line      = -4 };
-  enum { null          = -5 };
-
-  ///CalcComplexity calculates the complexity of a Newick.
-  ///From http://www.richelbilderbeek.nl/CppCalcComplexity.htm
-  BigInteger CalcComplexity(const std::vector<int>& v);
-
-  ///CalcNumOfCombinations returns the number of combinations a Newick can have.
-  ///
-  ///The number of possible combinations equals
-  ///     !(v0 + v1 + v2 + etc)
-  /// N = -------------------------- / 2^number_of_symmetries
-  ///     !v0 * !v1 * !v2 * etc
-  ///
-  ///      n
-  ///   = --- / 2^number_of_symmetries
-  ///      d
-  ///
-  /// where v denotes an element in vector v in range [1,-> >
-  /// where v0 denotes the first element in vector v
-  /// and where !v0 denotes the factorial of v0
-  ///     {factorial(!SUM(v)) product terms}
-  /// N = --------------------------------------------------
-  ///     {product terms} + { number_symmetries times a '2'}
-  ///
-  ///     numerator_terms
-  /// N = --------------------------------------------------
-  ///     denominator_terms with appended number_symmetries times a '2'
-  ///
-  ///From http://www.richelbilderbeek.nl/CppCalcNumOfCombinationsBinary.htm
-  BigInteger CalcNumOfCombinationsBinary(const std::vector<int>& v) const;
-
-  ///CalcNumOfSymmetries calculates the number of symmetries in a Newick.
-  ///From http://www.richelbilderbeek.nl/CppCalcNumOfSymmetriesBinary.htm
-  BigInteger CalcNumOfSymmetriesBinary(std::vector<int> v) const;
-
-  double CalcDenominator(const std::vector<int>& v,const double theta);
-
-  ///CalcProbabilitySimpleNewick returns the probability of
-  ///a Newick for a value of theta
-  ///using the Ewens formula
-  double CalcProbabilitySimpleNewick(const std::vector<int>& v,const double theta);
-
-
-  ///CreateInvalidNewicks creates std::strings
-  ///that cannot and must not be converted to a Newick
-  ///From http://www.richelbilderbeek.nl/CppCreateInvalidNewicks.htm
-  std::vector<std::string> CreateInvalidNewicks() noexcept;
-
-  ///CreateRandomNewick creates an unsorted Newick string,
-  ///with n values, with each value e [0,max>.
-  ///From http://www.richelbilderbeek.nl/CppCreateRandomNewick.htm
-  std::string CreateRandomNewick(const int n,const int max) noexcept;
-
-
-  ///CreateRandomBinaryNewickVector creates an unsorted Newick
-  ///std::vector<int>, with n values, with each value e [0,max>.
-  ///From http://www.richelbilderbeek.nl/CppCreateRandomBinaryNewickVector.htm
-  std::vector<int> CreateRandomBinaryNewickVector(const int n,const int max) noexcept;
-
-  ///DumbNewickToString converts a Newick std::vector<int> to a
-  ///standard-format std::string without error checking.
-  ///From http://www.richelbilderbeek.nl/CppDumbNewickToString.htm
-  std::string DumbNewickToString(const std::vector<int>& v) noexcept;
-
-  ///Factorial calculates the factorial of all std::vector elements.
-  ///From http://www.richelbilderbeek.nl/CppFactorial.htm
-  std::vector<int> Factorial(const std::vector<int>& v_original) noexcept;
-
-  ///FactorialBigInt returns the factorial of an integer
-  ///as a BigInteger.
-  ///From http://www.richelbilderbeek.nl/CppFactorialBigInt.htm
-  BigInteger FactorialBigInt(const int n) const noexcept;
-
-  ///Factorial calculates the factorial of a value.
-  ///From http://www.richelbilderbeek.nl/CppFactorial.htm
-  int Factorial(const int n) noexcept;
-
-  int FindPosAfter(const std::vector<int>& v,const int index,const int value) noexcept;
-  int FindPosBefore(const std::vector<int>& v,const int index,const int value) noexcept;
-
-  ///GetDepth returns the depth of each Newick element
-  ///Example #1
-  ///(1,2,3)
-  ///01 1 10
-  ///Example #2
-  ///((1,2),(3,(4,5)))
-  ///000 00 00 00 0000 <- depth layer 0 (comma's are skipped)
-  ///.11 11 11 11 111. <- depth layer 1
-  ///... .. .. .2 22.. <- depth layer 2
-  ///011 11 11 22 2210 <- result of GetDepth
-  std::vector<int> GetDepth(const std::vector<int>& n) const noexcept;
-
-
-  ///GetFactorialTerms returns all terms from a factorial.
-  ///For example, 4! return {1,2,3,4}
-  ///From http://www.richelbilderbeek.nl/CppGetFactorialTerms.htm
-  std::vector<int> GetFactorialTerms(const int n) noexcept;
-
-  std::vector<boost::tuple<std::string,double,double> > GetKnownProbabilities() noexcept;
-  int GetLeafMaxArity(const std::vector<int>& n) const noexcept;
-
-
-  ///GetRootBranches obtains the root branches from a non-unary Newick.
-  ///Examples:
-  ///(1,2)               -> { 1     , 2             }
-  ///(1,2,3)             -> { 1     , 2     , 3     }
-  ///((1,1),(2,2),(3,3)) -> { (1,1) , (2,2) , (3,3) }
-  ///From http://www.richelbilderbeek.nl/CppGetRootBranchesBinary.htm
-  std::vector<std::vector<int> >
-    GetRootBranches(const std::vector<int>& n) noexcept;
-
-  ///GetRootBranchesBinary obtains the two root branches from a binary Newick.
-  ///Examples:
-  ///(1,2)                 -> { 1             , 2     }
-  ///(1,(2,3))             -> { 1             , (2,3) }
-  ///((1,2),(3,4))         -> { (1,2)         , (3,4) }
-  ///(((1,2),(3,4)),(5,6)) -> { ((1,2),(3,4)) , (5,6) }
-  ///From http://www.richelbilderbeek.nl/CppGetRootBranchesBinary.htm
-  std::pair<std::vector<int>,std::vector<int> >
-    GetRootBranchesBinary(const std::vector<int>& n) noexcept;
-
-  ///GetSimplerBinaryNewicks creates simpler, derived Newicks from a binary Newick.
-  ///From http://www.richelbilderbeek.nl/CppGetSimplerBinaryNewicks.htm
-  std::vector<std::vector<int> > GetSimplerBinaryNewicks(
-    const std::vector<int>& n) noexcept;
-
-  ///GetSimplerBinaryNewicksFrequencyPairs creates simpler, derived Newicks from a
-  ///binary Newick as well as the frequency that is simplified.
-  std::vector<std::pair<std::vector<int>,int> >
-    GetSimplerBinaryNewicksFrequencyPairs(
-    const std::vector<int>& n
-  ) noexcept;
-
-  ///GetSimplerBinaryNewicksFrequencyPairs for a simple newick.
-  std::vector<std::pair<std::vector<int>,int> >
-    GetSimplerBinaryNewicksFrequencyPairsSimple(
-    const std::vector<int>& n
-  ) noexcept;
-
-  ///GetSimplerBinaryNewicksFrequencyPairs for a complex newick.
-  std::vector<std::pair<std::vector<int>,int> >
-    GetSimplerBinaryNewicksFrequencyPairsComplex(
-    const std::vector<int>& n
-  ) noexcept;
-
-  std::string GetVersion() const noexcept;
-  std::vector<std::string> GetVersionHistory() const noexcept;
-
-  ///InspectInvalidNewick writes the cause of the Newick invalidity
-  ///to the std::ostream.
-  ///From http://www.richelbilderbeek.nl/CppInspectInvalidNewick.htm
-  void InspectInvalidNewick(std::ostream& os, const std::vector<int>& v) noexcept;
-
-  ///IsBinaryNewick checks if a Newick is a binary tree,
-  ///that is: each node splits in two (not more) branches
-  ///From http://www.richelbilderbeek.nl/CppIsBinaryNewick.htm
-  bool IsBinaryNewick(std::vector<int> v) const noexcept;
-
-  bool IsTrinaryNewick(std::vector<int> v) noexcept;
-
-  ///IsUnaryNewick checks if a Newick is a unary tree,
-  ///that is: there is only one node.
-  ///From http://www.richelbilderbeek.nl/CppIsUnaryNewick.htm
-  bool IsUnaryNewick(const std::vector<int>& v) const noexcept;
-
-  ///IsSimple returns true if the Newick std::vector contains
-  ///leaves only. For example, the Newick '(1,2,3)' is simple,
-  ///the Newick '((1,2),3)' is not simple
-  ///From http://www.richelbilderbeek.nl/CppIsNewick.htm
-  bool IsSimple(const std::vector<int>& v) const noexcept;
-
-  ///NewickToString converts a Newick std::vector<int> to a
-  ///standard-format std::string.
-  ///From http://www.richelbilderbeek.nl/CppNewickToString.htm
-  std::string NewickToString(const std::vector<int>& v) const;
-
-  ///ReplaceLeave replaces the first leaf that it finds by a value.
-  ///For example, using ReplaceLeave on '((1,2),(3,4))' with a value
-  ///of 42 results in '(42,(3,4))'.
-  std::vector<int> ReplaceLeave(const std::vector<int>& newick, const int value) const;
-
-  ///StringToNewick converts a std::string to a Newick std::vector<int>
-  ///StringToNewick assumes that the input is well-formed and
-  ///has both trailing and tailing brackets.
-  ///From http://www.richelbilderbeek.nl/CppNewickToVector.htm
-  std::vector<int> StringToNewick(const std::string& newick) const;
-};
-
 namespace newick {
+
+///CalcComplexity calculates the complexity of a Newick.
+///From http://www.richelbilderbeek.nl/CppCalcComplexity.htm
+BigInteger CalcComplexity(const std::vector<int>& v);
+
+///CalcNumOfCombinations returns the number of combinations a Newick can have.
+///
+///The number of possible combinations equals
+///     !(v0 + v1 + v2 + etc)
+/// N = -------------------------- / 2^number_of_symmetries
+///     !v0 * !v1 * !v2 * etc
+///
+///      n
+///   = --- / 2^number_of_symmetries
+///      d
+///
+/// where v denotes an element in vector v in range [1,-> >
+/// where v0 denotes the first element in vector v
+/// and where !v0 denotes the factorial of v0
+///     {factorial(!SUM(v)) product terms}
+/// N = --------------------------------------------------
+///     {product terms} + { number_symmetries times a '2'}
+///
+///     numerator_terms
+/// N = --------------------------------------------------
+///     denominator_terms with appended number_symmetries times a '2'
+///
+///From http://www.richelbilderbeek.nl/CppCalcNumOfCombinationsBinary.htm
+BigInteger CalcNumOfCombinationsBinary(const std::vector<int>& v);
+
+///CalcNumOfSymmetries calculates the number of symmetries in a Newick.
+///From http://www.richelbilderbeek.nl/CppCalcNumOfSymmetriesBinary.htm
+BigInteger CalcNumOfSymmetriesBinary(std::vector<int> v);
+
+double CalcDenominator(const std::vector<int>& v,const double theta);
+
+///CalcProbabilitySimpleNewick returns the probability of
+///a Newick for a value of theta
+///using the Ewens formula
+double CalcProbabilitySimpleNewick(const std::vector<int>& v,const double theta);
+
+
+///CreateInvalidNewicks creates std::strings
+///that cannot and must not be converted to a Newick
+///From http://www.richelbilderbeek.nl/CppCreateInvalidNewicks.htm
+std::vector<std::string> CreateInvalidNewicks() noexcept;
+
+///CreateRandomNewick creates an unsorted Newick string,
+///with n values, with each value e [0,max>.
+///From http://www.richelbilderbeek.nl/CppCreateRandomNewick.htm
+std::string CreateRandomNewick(const int n,const int max) noexcept;
+
+
+///CreateRandomBinaryNewickVector creates an unsorted Newick
+///std::vector<int>, with n values, with each value e [0,max>.
+///From http://www.richelbilderbeek.nl/CppCreateRandomBinaryNewickVector.htm
+std::vector<int> CreateRandomBinaryNewickVector(const int n,const int max) noexcept;
+
+///DumbNewickToString converts a Newick std::vector<int> to a
+///standard-format std::string without error checking.
+///From http://www.richelbilderbeek.nl/CppDumbNewickToString.htm
+std::string DumbNewickToString(const std::vector<int>& v) noexcept;
+
+///Factorial calculates the factorial of all std::vector elements.
+///From http://www.richelbilderbeek.nl/CppFactorial.htm
+std::vector<int> Factorial(const std::vector<int>& v_original) noexcept;
+
+///FactorialBigInt returns the factorial of an integer
+///as a BigInteger.
+///From http://www.richelbilderbeek.nl/CppFactorialBigInt.htm
+BigInteger FactorialBigInt(const int n) noexcept;
+
+///Factorial calculates the factorial of a value.
+///From http://www.richelbilderbeek.nl/CppFactorial.htm
+int Factorial(const int n) noexcept;
+
+int FindPosAfter(const std::vector<int>& v,const int index,const int value) noexcept;
+int FindPosBefore(const std::vector<int>& v,const int index,const int value) noexcept;
+
+///GetDepth returns the depth of each Newick element
+///Example #1
+///(1,2,3)
+///01 1 10
+///Example #2
+///((1,2),(3,(4,5)))
+///000 00 00 00 0000 <- depth layer 0 (comma's are skipped)
+///.11 11 11 11 111. <- depth layer 1
+///... .. .. .2 22.. <- depth layer 2
+///011 11 11 22 2210 <- result of GetDepth
+std::vector<int> GetDepth(const std::vector<int>& n) noexcept;
+
+
+///GetFactorialTerms returns all terms from a factorial.
+///For example, 4! return {1,2,3,4}
+///From http://www.richelbilderbeek.nl/CppGetFactorialTerms.htm
+std::vector<int> GetFactorialTerms(const int n) noexcept;
+
+std::vector<boost::tuple<std::string,double,double> > GetKnownProbabilities() noexcept;
+int GetLeafMaxArity(const std::vector<int>& n) noexcept;
+
+
+///GetRootBranches obtains the root branches from a non-unary Newick.
+///Examples:
+///(1,2)               -> { 1     , 2             }
+///(1,2,3)             -> { 1     , 2     , 3     }
+///((1,1),(2,2),(3,3)) -> { (1,1) , (2,2) , (3,3) }
+///From http://www.richelbilderbeek.nl/CppGetRootBranchesBinary.htm
+std::vector<std::vector<int> >
+  GetRootBranches(const std::vector<int>& n) noexcept;
+
+///GetRootBranchesBinary obtains the two root branches from a binary Newick.
+///Examples:
+///(1,2)                 -> { 1             , 2     }
+///(1,(2,3))             -> { 1             , (2,3) }
+///((1,2),(3,4))         -> { (1,2)         , (3,4) }
+///(((1,2),(3,4)),(5,6)) -> { ((1,2),(3,4)) , (5,6) }
+///From http://www.richelbilderbeek.nl/CppGetRootBranchesBinary.htm
+std::pair<std::vector<int>,std::vector<int> >
+  GetRootBranchesBinary(const std::vector<int>& n) noexcept;
+
+///GetSimplerBinaryNewicks creates simpler, derived Newicks from a binary Newick.
+///From http://www.richelbilderbeek.nl/CppGetSimplerBinaryNewicks.htm
+std::vector<std::vector<int> > GetSimplerBinaryNewicks(
+  const std::vector<int>& n) noexcept;
+
+///GetSimplerBinaryNewicksFrequencyPairs creates simpler, derived Newicks from a
+///binary Newick as well as the frequency that is simplified.
+std::vector<std::pair<std::vector<int>,int> >
+  GetSimplerBinaryNewicksFrequencyPairs(
+  const std::vector<int>& n
+) noexcept;
+
+///GetSimplerBinaryNewicksFrequencyPairs for a simple newick.
+std::vector<std::pair<std::vector<int>,int> >
+  GetSimplerBinaryNewicksFrequencyPairsSimple(
+  const std::vector<int>& n
+) noexcept;
+
+///GetSimplerBinaryNewicksFrequencyPairs for a complex newick.
+std::vector<std::pair<std::vector<int>,int> >
+  GetSimplerBinaryNewicksFrequencyPairsComplex(
+  const std::vector<int>& n
+) noexcept;
+
+std::string GetNewickVersion() noexcept;
+std::vector<std::string> GetNewickVersionHistory() noexcept;
+
+///InspectInvalidNewick writes the cause of the Newick invalidity
+///to the std::ostream.
+///From http://www.richelbilderbeek.nl/CppInspectInvalidNewick.htm
+void InspectInvalidNewick(std::ostream& os, const std::vector<int>& v) noexcept;
+
+///IsBinaryNewick checks if a Newick is a binary tree,
+///that is: each node splits in two (not more) branches
+///From http://www.richelbilderbeek.nl/CppIsBinaryNewick.htm
+bool IsBinaryNewick(std::vector<int> v) noexcept;
+
+bool IsTrinaryNewick(std::vector<int> v) noexcept;
+
+///IsUnaryNewick checks if a Newick is a unary tree,
+///that is: there is only one node.
+///From http://www.richelbilderbeek.nl/CppIsUnaryNewick.htm
+bool IsUnaryNewick(const std::vector<int>& v) noexcept;
+
+///IsSimple returns true if the Newick std::vector contains
+///leaves only. For example, the Newick '(1,2,3)' is simple,
+///the Newick '((1,2),3)' is not simple
+///From http://www.richelbilderbeek.nl/CppIsNewick.htm
+bool IsSimple(const std::vector<int>& v) noexcept;
+
+///NewickToString converts a Newick std::vector<int> to a
+///standard-format std::string.
+///From http://www.richelbilderbeek.nl/CppNewickToString.htm
+std::string NewickToString(const std::vector<int>& v);
+
+///ReplaceLeave replaces the first leaf that it finds by a value.
+///For example, using ReplaceLeave on '((1,2),(3,4))' with a value
+///of 42 results in '(42,(3,4))'.
+std::vector<int> ReplaceLeave(const std::vector<int>& newick, const int value);
+
+///StringToNewick converts a std::string to a Newick std::vector<int>
+///StringToNewick assumes that the input is well-formed and
+///has both trailing and tailing brackets.
+///From http://www.richelbilderbeek.nl/CppNewickToVector.htm
+std::vector<int> StringToNewick(const std::string& newick);
 
 enum { bracket_open  = -1 };
 enum { bracket_close = -2 };
