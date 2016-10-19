@@ -246,37 +246,101 @@ double ribi::Newick::CalcProbabilitySimpleNewick(
   return probability;
 }
 
-void ribi::Newick::CheckNewick(const std::string& s) const
+void ribi::newick::CheckNewickForMinimalSize(const std::string& s)
 {
   if (s.size()<3)
+  {
     throw std::invalid_argument(
-      "The Newick std::string must have a size of at least three characters");
+      "The Newick std::string must have a size of "
+      "at least three characters"
+    );
+  }
+}
+
+void ribi::newick::CheckNewickForOpeningBracket(const std::string& s)
+{
   if (s[0]!='(')
+  {
     throw std::invalid_argument(
-      "The Newick std::string must start with an opening bracket ('(').");
+      "The Newick std::string must start with "
+      "an opening bracket ('(')."
+    );
+  }
+}
+
+void ribi::newick::CheckNewickForClosingBracket(const std::string& s)
+{
   if (s[s.size()-1]!=')')
+  {
     throw std::invalid_argument(
-      "The Newick std::string must end with a closing bracket (')').");
-  if (std::count(s.begin(),s.end(),'(')
-    !=std::count(s.begin(),s.end(),')'))
+      "The Newick std::string must end with "
+      "a closing bracket (')')."
+    );
+  }
+}
+
+void ribi::newick::CheckNewickForMatchingBrackets(const std::string& s)
+{
+  if (std::count(std::begin(s),std::end(s),'(')
+    !=std::count(std::begin(s),std::end(s),')'))
+  {
     throw std::invalid_argument(
        "The Newick std::string must have as much opening "
-       "as closing brackets #1");
+       "as closing brackets"
+    );
+  }
+}
+
+void ribi::newick::CheckNewickForNonZero(const std::string& s)
+{
   if (s.find("(0")!=std::string::npos)
+  {
     throw std::invalid_argument(
       "A std::string Newick frequency cannot be or "
-      "start with a zero (#1)");
+      "start with a zero (#1)"
+    );
+  }
   if (s.find(",0")!=std::string::npos)
+  {
     throw std::invalid_argument(
       "A std::string Newick frequency cannot be or "
-      "start with a zero (#2)");
+      "start with a zero (#2)"
+    );
+  }
+}
+
+void ribi::newick::CheckNewickForBracketDistance(const std::string& s)
+{
   if (s.find("()")!=std::string::npos)
+  {
     throw std::invalid_argument(
       "The Newick std::string cannot have "
-      "a consecutive opening and closing bracket");
-  if (s.find(",,")!=std::string::npos)
+      "a consecutive opening and closing bracket"
+    );
+  }
+}
+
+void ribi::newick::CheckNewickForConsecutiveCommas(const std::string& s)
+{
+  if (s.find(",,") != std::string::npos)
+  {
     throw std::invalid_argument(
-      "A Newick std::string can have no consecutive comma's");
+      "A Newick std::string can have no consecutive comma's"
+    );
+  }
+}
+
+
+void ribi::newick::CheckNewick(const std::string& s)
+{
+  CheckNewickForMinimalSize(s);
+  CheckNewickForOpeningBracket(s);
+  CheckNewickForClosingBracket(s);
+  CheckNewickForMatchingBrackets(s);
+  CheckNewickForNonZero(s);
+  CheckNewickForBracketDistance(s);
+  CheckNewickForConsecutiveCommas(s);
+
   if (s.find("(,")!=std::string::npos)
     throw std::invalid_argument(
       "A Newick std::string cannot have comma "
@@ -1307,7 +1371,7 @@ bool ribi::Newick::IsNewick(const std::string& s) const noexcept
 {
   try
   {
-    CheckNewick(s);
+    newick::CheckNewick(s);
   }
   catch (const std::exception&)
   {

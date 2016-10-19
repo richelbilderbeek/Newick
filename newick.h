@@ -49,10 +49,6 @@ struct Newick
   enum { new_line      = -4 };
   enum { null          = -5 };
 
-  ///AllAboutEqual tests if all values in a std::vector are about equal.
-  ///From http://www.richelbilderbeek.nl/CppAllAboutEqual.htm
-  //bool AllAboutEqual(const std::vector<double>& v,const double tolerance = 0.01);
-
   ///CalcComplexity calculates the complexity of a Newick.
   ///From http://www.richelbilderbeek.nl/CppCalcComplexity.htm
   BigInteger CalcComplexity(const std::vector<int>& v);
@@ -366,23 +362,50 @@ enum { null          = -5 };
 ///From http://www.richelbilderbeek.nl/CppCheckNewick.htm
 void CheckNewick(const std::vector<int>& v);
 
+///CheckNewick checks if a std::string is a valid Newick.
+///If this std::string is not a valid Newick,
+///CheckNewick throws an exception with a detailed description
+///From http://www.richelbilderbeek.nl/CppCheckNewick.htm
+void CheckNewick(const std::string& s);
+
 ///Throws if Newick is too short to be valid
 void CheckNewickForMinimalSize(const std::vector<int>& v);
+
+///Throws if Newick is too short to be valid
+void CheckNewickForMinimalSize(const std::string& s);
 
 ///Throws if Newick has no opening bracket
 void CheckNewickForOpeningBracket(const std::vector<int>& v);
 
+///Throws if Newick has no opening bracket
+void CheckNewickForOpeningBracket(const std::string& s);
+
 ///Throws if Newick has no closing bracket
 void CheckNewickForClosingBracket(const std::vector<int>& v);
+
+///Throws if Newick has no closing bracket
+void CheckNewickForClosingBracket(const std::string& s);
 
 ///Throws if Newick has an equal number of opening and closing brackets
 void CheckNewickForMatchingBrackets(const std::vector<int>& v);
 
+///Throws if Newick has an equal number of opening and closing brackets
+void CheckNewickForMatchingBrackets(const std::string& s);
+
 ///Throws if Newick has a frequency of zero
 void CheckNewickForNonZero(const std::vector<int>& v);
 
+///Throws if Newick has a frequency of zero
+void CheckNewickForNonZero(const std::string& s);
+
 ///Throws if Newick has no value between brackets, e.g '(1,())'
 void CheckNewickForBracketDistance(const std::vector<int>& v);
+
+///Throws if Newick has no value between brackets, e.g '(1,())'
+void CheckNewickForBracketDistance(const std::string& s);
+
+///Throws if Newick has two consecutive comma's, e.g '(1,,1)'
+void CheckNewickForConsecutiveCommas(const std::string& s);
 
 ///CreateValidBinaryNewicks creates std::strings
 ///that can be converted to a BinaryNewickVector.
