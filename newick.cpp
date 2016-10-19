@@ -291,7 +291,7 @@ void ribi::newick::CheckNewickForMatchingBrackets(const std::string& s)
   }
 }
 
-void ribi::newick::CheckNewickForNonZero(const std::string& s)
+void ribi::newick::CheckNewickForZero(const std::string& s)
 {
   if (s.find("(0")!=std::string::npos)
   {
@@ -330,6 +330,28 @@ void ribi::newick::CheckNewickForConsecutiveCommas(const std::string& s)
   }
 }
 
+void ribi::newick::CheckNewickForCommaAfterBracketOpen(const std::string& s)
+{
+  if (s.find("(,")!=std::string::npos)
+  {
+    throw std::invalid_argument(
+      "A Newick std::string cannot have comma "
+      "directly after an opening bracket"
+    );
+  }
+}
+
+
+void ribi::newick::CheckNewickForCommaBeforeBracketClose(const std::string& s)
+{
+  if (s.find(",)")!=std::string::npos)
+  {
+    throw std::invalid_argument(
+      "A Newick std::string cannot have comma "
+      "directly before a closing bracket"
+    );
+  }
+}
 
 void ribi::newick::CheckNewick(const std::string& s)
 {
@@ -337,18 +359,12 @@ void ribi::newick::CheckNewick(const std::string& s)
   CheckNewickForOpeningBracket(s);
   CheckNewickForClosingBracket(s);
   CheckNewickForMatchingBrackets(s);
-  CheckNewickForNonZero(s);
+  CheckNewickForZero(s);
   CheckNewickForBracketDistance(s);
   CheckNewickForConsecutiveCommas(s);
+  CheckNewickForCommaAfterBracketOpen(s);
+  CheckNewickForCommaBeforeBracketClose(s);
 
-  if (s.find("(,")!=std::string::npos)
-    throw std::invalid_argument(
-      "A Newick std::string cannot have comma "
-      "directly after an opening bracket");
-  if (s.find(",)")!=std::string::npos)
-    throw std::invalid_argument(
-      "A Newick std::string cannot have comma "
-      "directly before a closing bracket");
 
   std::string s_copy = s;
   while(s_copy.size()>2) //Find a leaf and cut it until the string is empty
@@ -372,37 +388,18 @@ void ribi::newick::CheckNewick(const std::string& s)
       }
 
       if (j ==  0) continue; //j cannot be 0 after previous for loop
-      if (j == sz)
-        throw std::invalid_argument(
-          "The Newick std::string must have as much opening as closing brackets #2");
+      assert(j != sz); // The Newick std::string must have as much opening as closing brackets #2"
       break;
     }
-    if (s_copy[i]!='(')
-      throw std::invalid_argument(
-        "The Newick std::string must have as much opening as closing brackets #3");
+    assert(s_copy[i] == '('); // The Newick std::string must have as much opening as closing brackets #3"
     //Indices i and j found
     //Is range between i and j valid?
-    if (s_copy[i]!='(')
-      throw std::logic_error(
-        "Bilderbikkel incorrectly assumes that s_copy[i]=='('");
-    if (s_copy[j]!=')')
-      throw std::logic_error(
-        "Bilderbikkel incorrectly assumes that s_copy[j]==')'");
+    assert(s_copy[i]=='(');
+    assert(s_copy[j]==')');
     //Check the range
     for (size_t k=i+1; k!=j; ++k)
     {
-      if ( s_copy[k]!='0'
-        && s_copy[k]!='1'
-        && s_copy[k]!='2'
-        && s_copy[k]!='3'
-        && s_copy[k]!='4'
-        && s_copy[k]!='5'
-        && s_copy[k]!='6'
-        && s_copy[k]!='7'
-        && s_copy[k]!='8'
-        && s_copy[k]!='9'
-        && s_copy[k]!='0'
-        && s_copy[k]!=',')
+      if (!IsNumberOrComma(s_copy[k]))
       {
         std::stringstream err_msg;
         err_msg << "Invalid non-number character in input: '" << s_copy[k] << "'";
@@ -485,7 +482,7 @@ void ribi::newick::CheckNewickForMatchingBrackets(const std::vector<int>& v)
   }
 }
 
-void ribi::newick::CheckNewickForNonZero(const std::vector<int>& v)
+void ribi::newick::CheckNewickForZero(const std::vector<int>& v)
 {
   if (std::count(std::begin(v),std::end(v),0))
   {
@@ -521,7 +518,7 @@ void ribi::newick::CheckNewick(const std::vector<int>& v)
   CheckNewickForOpeningBracket(v);
   CheckNewickForClosingBracket(v);
   CheckNewickForMatchingBrackets(v);
-  CheckNewickForNonZero(v);
+  CheckNewickForZero(v);
   CheckNewickForBracketDistance(v);
 
   std::vector<int> v_copy = v;
@@ -1378,6 +1375,12 @@ bool ribi::Newick::IsNewick(const std::string& s) const noexcept
     return false;
   }
   return true;
+}
+
+bool ribi::newick::IsNumberOrComma(const char c) noexcept
+{
+  const std::string s{"0123456789,"};
+  return s.find(c) != std::string::npos;
 }
 
 bool ribi::Newick::IsSimple(const std::vector<int>& v) const noexcept

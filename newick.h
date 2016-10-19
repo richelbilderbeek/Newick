@@ -393,10 +393,10 @@ void CheckNewickForMatchingBrackets(const std::vector<int>& v);
 void CheckNewickForMatchingBrackets(const std::string& s);
 
 ///Throws if Newick has a frequency of zero
-void CheckNewickForNonZero(const std::vector<int>& v);
+void CheckNewickForZero(const std::vector<int>& v);
 
 ///Throws if Newick has a frequency of zero
-void CheckNewickForNonZero(const std::string& s);
+void CheckNewickForZero(const std::string& s);
 
 ///Throws if Newick has no value between brackets, e.g '(1,())'
 void CheckNewickForBracketDistance(const std::vector<int>& v);
@@ -406,6 +406,12 @@ void CheckNewickForBracketDistance(const std::string& s);
 
 ///Throws if Newick has two consecutive comma's, e.g '(1,,1)'
 void CheckNewickForConsecutiveCommas(const std::string& s);
+
+///Throws if Newick has a comma after a bracket open, e.g '(,1)'
+void CheckNewickForCommaAfterBracketOpen(const std::string& s);
+
+///Throws if Newick has a comma before a bracket close, e.g '(1,)'
+void CheckNewickForCommaBeforeBracketClose(const std::string& s);
 
 ///CreateValidBinaryNewicks creates std::strings
 ///that can be converted to a BinaryNewickVector.
@@ -438,6 +444,9 @@ std::vector<T> CreateVector(const T& a, const T& b, const T& c)
   v.push_back(c);
   return v;
 }
+
+///Returns true if c is a number or comma
+bool IsNumberOrComma(const char c) noexcept;
 
 ///Surround surrounds the Newick with brackets
 std::vector<int> Surround(const std::vector<int>& newick) noexcept;
