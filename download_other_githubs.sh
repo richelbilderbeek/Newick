@@ -22,6 +22,10 @@ if [ ! -d ManyDigitNewick ]; then
   git clone https://github.com/richelbilderbeek/ManyDigitNewick
 fi
 
+if [ ! -d NewickVector ]; then
+  git clone https://github.com/richelbilderbeek/SortedBinaryNewickVector
+fi
+
 if [ ! -d TwoDigitNewick ]; then
   git clone https://github.com/richelbilderbeek/TwoDigitNewick
 fi
