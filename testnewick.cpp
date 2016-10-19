@@ -102,8 +102,8 @@ bool ribi::TestBinaryNewickVector::CanCalculate(const std::string& newick_str, c
   if (theta <= 0.0) return false;
   if (!newick::IsNewick(newick_str))
     return false;
-  const std::vector<int> newick = Newick().StringToNewick(newick_str);
-  if (!Newick().IsUnaryNewick(newick) && !Newick().IsBinaryNewick(newick))
+  const std::vector<int> newick = newick::StringToNewick(newick_str);
+  if (!newick::IsUnaryNewick(newick) && !newick::IsBinaryNewick(newick))
     return false;
   return true;
 }
@@ -163,8 +163,8 @@ bool ribi::TestSortedBinaryNewickVector::CanCalculate(const std::string& newick_
   if (theta <= 0.0) return false;
   if (!newick::IsNewick(newick_str))
     return false;
-  const std::vector<int> newick = Newick().StringToNewick(newick_str);
-  if (!Newick().IsUnaryNewick(newick) && !Newick().IsBinaryNewick(newick))
+  const std::vector<int> newick = newick::StringToNewick(newick_str);
+  if (!newick::IsUnaryNewick(newick) && !newick::IsBinaryNewick(newick))
     return false;
   return true;
 }
@@ -186,8 +186,8 @@ bool ribi::TestTwoDigitNewick::CanCalculate(const std::string& newick_str, const
   if (theta <= 0.0) return false;
   if (!newick::IsNewick(newick_str))
     return false;
-  const std::vector<int> newick = Newick().StringToNewick(newick_str);
-  if (!Newick().IsUnaryNewick(newick) && !Newick().IsBinaryNewick(newick))
+  const std::vector<int> newick = newick::StringToNewick(newick_str);
+  if (!newick::IsUnaryNewick(newick) && !newick::IsBinaryNewick(newick))
     return false;
   return true;
 }

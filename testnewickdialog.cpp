@@ -30,9 +30,9 @@ ribi::TestNewickDialog::TestNewickDialog(const int types)
   const BigInteger max_complexity = 10000;
   for(const std::string& newick_str: newicks)
   {
-    const std::vector<int> newick = Newick().StringToNewick(newick_str);
+    const std::vector<int> newick = newick::StringToNewick(newick_str);
     //Only test binary Newicks and relatively small Newicks
-    if (Newick().CalcComplexity(newick) > max_complexity)
+    if (newick::CalcComplexity(newick) > max_complexity)
     {
       continue;
     }
@@ -107,7 +107,7 @@ void ribi::TestNewickDialog::DoAutoCalculate(
 
   const BigInteger max_complexity
     = stringToBigInteger(max_complexity_str);
-  if (Newick().CalcComplexity(Newick().StringToNewick(newick_str))
+  if (newick::CalcComplexity(newick::StringToNewick(newick_str))
     < max_complexity)
   {
     DoCalculate(newick_str,theta_str);
@@ -150,7 +150,7 @@ void ribi::TestNewickDialog::DoCalculate(
     m_text = "Invalid Newick";
     return;
   }
-  const std::vector<int> newick = Newick().StringToNewick(newick_str);
+  const std::vector<int> newick = newick::StringToNewick(newick_str);
   const std::vector<boost::shared_ptr<TestNewick> > tests = TestNewick::CreateTests(m_types);
 
   //Do all valid tests
