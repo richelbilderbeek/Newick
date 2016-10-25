@@ -92,6 +92,8 @@ std::vector<std::string> CreateInvalidNewicks() noexcept;
 ///From http://www.richelbilderbeek.nl/CppCreateRandomNewick.htm
 std::string CreateRandomNewick(const int n,const int max) noexcept;
 
+///Put the integers in a pair ordered
+std::pair<int,int> CreateSortedPair(const int a, const int b) noexcept;
 
 ///CreateRandomBinaryNewickVector creates an unsorted Newick
 ///std::vector<int>, with n values, with each value e [0,max>.

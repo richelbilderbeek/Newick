@@ -139,6 +139,22 @@ BOOST_AUTO_TEST_CASE(ribi_newick_CalcNumOfSymmetriesBinary)
   BOOST_CHECK(CalcNumOfCombinationsBinary(StringToNewick("(1,((1,1),(1,1)))"))==15);
 }
 
+BOOST_AUTO_TEST_CASE(ribi_newick_CreateSortedPair)
+{
+  //Supplied in order
+  {
+    const auto p = ribi::newick::CreateSortedPair(3,14);
+    BOOST_CHECK_EQUAL(p.first, 3);
+    BOOST_CHECK_EQUAL(p.second, 14);
+  }
+  //Supplied in reverse order
+  {
+    const auto p = ribi::newick::CreateSortedPair(14,3);
+    BOOST_CHECK_EQUAL(p.first, 3);
+    BOOST_CHECK_EQUAL(p.second, 14);
+  }
+}
+
 BOOST_AUTO_TEST_CASE(ribi_newick_bigIntegerToString)
 {
   BOOST_CHECK(bigIntegerToString(ribi::newick::FactorialBigInt(1))=="1");

@@ -168,11 +168,7 @@ BigInteger ribi::newick::CalcNumOfSymmetriesBinary(std::vector<int> v)
     {
       if (v[i] > 0 && v[i+1] > 0)
       {
-        //Keep pair sorted
-        const std::pair<int,int> p
-          = (v[i] <= v[i+1]
-          ? std::make_pair(v[i+0],v[i+1])
-          : std::make_pair(v[i+1],v[i+0]));
+        const std::pair<int,int> p = CreateSortedPair(v[i], v[i+1]);
         //If this leaf is new, store it
         if (ids.find(p)==ids.end())
         {
@@ -188,10 +184,7 @@ BigInteger ribi::newick::CalcNumOfSymmetriesBinary(std::vector<int> v)
       if (v[i] > 0 && v[i+1] > 0)
       {
         //Keep pair sorted
-        const std::pair<int,int> p
-          = (v[i] <= v[i+1]
-          ? std::make_pair(v[i+0],v[i+1])
-          : std::make_pair(v[i+1],v[i+0]));
+        const std::pair<int,int> p = CreateSortedPair(v[i], v[i+1]);
         //If this leaf is new, store it
         assert(ids.find(p)!=ids.end() && "Leaf should have been stored already");
         assert(i > 0);
@@ -681,6 +674,12 @@ std::vector<int> ribi::newick::CreateRandomBinaryNewickVector(const int n,const 
   }
   assert(newick::IsNewick(v));
   return v;
+}
+
+std::pair<int,int> ribi::newick::CreateSortedPair(const int a, const int b) noexcept
+{
+  if (a <= b) return std::make_pair(a, b);
+  return std::make_pair(b, a);
 }
 
 std::vector<std::string> ribi::newick::CreateValidBinaryNewicks() noexcept
