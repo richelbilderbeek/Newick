@@ -321,6 +321,14 @@ std::vector<T> CreateVector(const T& a, const T& b, const T& c)
   return v;
 }
 
+///Finds the indices of the innermost brackets
+///Examples:
+///(1,(1,1))
+///   ^   ^
+std::pair<std::size_t, std::size_t> FindOpeningAndClosingBracketIndices(
+  const std::string& s
+);
+
 
 ///GetSimplerNewicks creates simpler, derived Newicks from a Newick.
 ///From http://www.richelbilderbeek.nl/CppGetSimplerNewicks.htm

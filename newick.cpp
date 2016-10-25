@@ -372,28 +372,9 @@ void ribi::newick::CheckNewick(const std::string& s)
     //Find a leaf
     //Find index i (starting opening bracket) and j (closing bracket)
     const std::size_t sz = s_copy.size();
-    std::size_t i = 0;
-    std::size_t j = 0;
-    for (i=0 ; i!=sz; ++i) //Index of opening bracket
-    {
-      if (s_copy[i]!='(') continue;
-
-      assert(s_copy[i]=='(');
-      assert(i+1 < s_copy.size());
-      for (j=i+1; j!=sz; ++j)
-      {
-        if (s_copy[j]=='(') { j = 0; break; }
-        if (s_copy[j]!=')') continue;
-        break;
-      }
-
-      if (j ==  0) continue; //j cannot be 0 after previous for loop
-      assert(j != sz); // The Newick std::string must have as much opening as closing brackets #2"
-      break;
-    }
-    assert(s_copy[i] == '('); // The Newick std::string must have as much opening as closing brackets #3"
-    //Indices i and j found
-    //Is range between i and j valid?
+    const auto p = FindOpeningAndClosingBracketIndices(s_copy);
+    std::size_t i = p.first;
+    std::size_t j = p.second;
     assert(s_copy[i]=='(');
     assert(s_copy[j]==')');
     //Check the range
@@ -863,6 +844,39 @@ int ribi::newick::FindPosBefore(const std::vector<int>& v,const int x, const int
     if (v[i]==x) return i;
   }
   return -1;
+}
+
+std::pair<std::size_t, std::size_t>
+ribi::newick::FindOpeningAndClosingBracketIndices(
+  const std::string& s
+)
+{
+  CheckNewickForMatchingBrackets(s);
+  const std::size_t sz = s.size();
+  std::size_t i = 0;
+  std::size_t j = 0;
+  for (i=0; i!=sz; ++i) //Index of opening bracket
+  {
+    if (s[i]!='(') continue;
+
+    assert(s[i]=='(');
+    assert(i+1 < s.size());
+    for (j=i+1; j!=sz; ++j)
+    {
+      if (s[j]=='(')
+      {
+        //j = 0;
+        break;
+      }
+      if (s[j]!=')') continue;
+      if (s[i]=='(' && s[j] == ')') return std::make_pair(i, j);
+    }
+    //if (j == 0) continue; //j cannot be 0 after previous for loop
+    //assert(j != sz); // Must have as much opening as closing brackets #2"
+    //break;
+  }
+  assert(!"Should not get here"); //!OCLINT valid idiom
+  throw std::logic_error("could not find inner pair");
 }
 
 std::vector<int> ribi::newick::GetDepth(const std::vector<int>& n) noexcept
