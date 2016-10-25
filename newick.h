@@ -81,6 +81,8 @@ double CalcDenominator(const std::vector<int>& v,const double theta);
 ///using the Ewens formula
 double CalcProbabilitySimpleNewick(const std::vector<int>& v,const double theta);
 
+///Count the number of adjacent non-zero positive values
+int CountAdjacentNonZeroPositives(const std::vector<int>& v);
 
 ///CreateInvalidNewicks creates std::strings
 ///that cannot and must not be converted to a Newick

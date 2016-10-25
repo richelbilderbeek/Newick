@@ -152,19 +152,14 @@ BigInteger ribi::newick::CalcNumOfSymmetriesBinary(std::vector<int> v)
 
   while (1)
   {
-    //std::copy(v.begin(),v.end(),std::ostream_iterator<int>(std::clog," ")); std::clog << '\n';
     //Count number of symmetries
     assert(!v.empty());
     const std::size_t sz = v.size();
     assert(sz >= 2);
-    const std::size_t j = sz - 1;
-    for (std::size_t i = 0; i!=j; ++i)
-    {
-      if (v[i] > 0 && v[i]==v[i+1]) ++n_symmetries;
-    }
+    n_symmetries += CountAdjacentNonZeroPositives(v);
+
     //Collect all leaves and store new leaves
-    //std::vector<std::pair<int,int>> leaves;
-    for (std::size_t i = 0; i!=j; ++i)
+    for (std::size_t i = 0; i!=sz - 1; ++i)
     {
       if (v[i] > 0 && v[i+1] > 0)
       {
@@ -186,7 +181,7 @@ BigInteger ribi::newick::CalcNumOfSymmetriesBinary(std::vector<int> v)
         //Keep pair sorted
         const std::pair<int,int> p = CreateSortedPair(v[i], v[i+1]);
         //If this leaf is new, store it
-        assert(ids.find(p)!=ids.end() && "Leaf should have been stored already");
+        assert(ids.find(p)!=ids.end()); // Leaf should have been stored already
         assert(i > 0);
         std::vector<int> v_new;
         std::copy(v.begin(),v.begin() + i - 1,std::back_inserter(v_new));
@@ -554,6 +549,18 @@ void ribi::newick::CheckNewick(const std::vector<int>& v)
     std::copy(v_copy.begin() + j + 1, v_copy.end(),std::back_inserter(v_new));
     v_copy = v_new;
   }
+}
+
+int ribi::newick::CountAdjacentNonZeroPositives(const std::vector<int>& v)
+{
+  assert(v.size() >= 2);
+  const std::size_t sz{v.size()};
+  int n{0};
+  for (std::size_t i = 0; i!=sz - 1; ++i)
+  {
+    if (v[i] > 0 && v[i]==v[i+1]) ++n;
+  }
+  return n;
 }
 
 std::vector<std::string> ribi::newick::CreateInvalidNewicks() noexcept
