@@ -1144,7 +1144,6 @@ std::vector<std::vector<int>>
   assert(IsNewick(n));
   std::vector<std::vector<int>> newicks;
   const int size = boost::numeric_cast<int>(n.size());
-  const std::vector<int> depths = GetDepth(n);
 
   //Go through all positions
   for (int i = 0; i!=size; ++i)
@@ -1154,69 +1153,87 @@ std::vector<std::vector<int>>
     if (n[i] != 1) continue;
     //If a frequency is one, the Newick needs to be simplified
     assert(n[i] == 1); //Most difficult...
-    const int depth = depths[i];
+    const auto v = GetSimplerNewicksHardFromHere(n, i);
+    std::copy(std::begin(v), std::end(v), std::back_inserter(newicks));
+  }
+  return newicks;
+}
+
+std::vector<std::vector<int>>
+ribi::newick::GetSimplerNewicksHardFromHere(
+    const std::vector<int>& n,
+    const int i
+) noexcept
+{
+  const std::vector<int> depths = GetDepth(n);
+  const int size = boost::numeric_cast<int>(n.size());
+  assert(i >= 0);
+  assert(i < size);
+  assert(n[i] == 1); //Otherwise it would not be hard
+  std::vector<std::vector<int>> newicks;
+
+  const int depth = depths[i];
+  //j must first decrement, later increment with the same code
+  int j_end  = -1;
+  int j_step = -1;
+  for (int j=i-1; ; j+=j_step)
+  {
     //j must first decrement, later increment with the same code
-    int j_end  = -1;
-    int j_step = -1;
-    for (int j=i-1; ; j+=j_step)
+    if (j == j_end || (depths[j] == depth && n[j] < 0))
     {
-      //j must first decrement, later increment with the same code
-      if (j == j_end || (depths[j] == depth && n[j] < 0))
+      if (j_step == -1)
       {
-        if (j_step == -1)
-        {
-          j = i + 1;
-          j_end = size;
-          j_step = 1;
-        }
-        else
-        {
-          break;
-        }
+        j = i + 1;
+        j_end = size;
+        j_step = 1;
       }
-      assert(i!=j);
-      assert(j >= 0);
-      assert(j < size);
-      //Only take frequencies of the same depth into account
-      if (n[j] < 1 || depths[j] != depth) continue;
-      std::vector<int> new_newick_with_zero(n);
-      --new_newick_with_zero[i];
-      assert(new_newick_with_zero[i] == 0);
-      ++new_newick_with_zero[j];
-      //Remove brackets after possibly lonely value
-      //If there is only one or two values between
-      //the brackets, and one of these values was a
-      //1 becoming added to the other, nullify the
-      //1 and both brackets:
-      //'((1,1),2)' -> '(00102)' -> '(1,2)'
-      if (std::abs(i - j) == 1)
+      else
       {
-        const int index_bracket_open  = std::min(i,j) - 1;
-        const int index_bracket_close = std::max(i,j) + 1;
-        if ( new_newick_with_zero[index_bracket_open]  == newick::bracket_open
-          && new_newick_with_zero[index_bracket_close] == newick::bracket_close)
-        {
-          new_newick_with_zero[index_bracket_open]  = 0;
-          new_newick_with_zero[index_bracket_close] = 0;
-        }
+        break;
       }
-      //Remove decremented i and possibly nullified brackets
-      std::vector<int> new_newick;
-      std::remove_copy(
-        new_newick_with_zero.begin(),
-        new_newick_with_zero.end(),
-        std::back_inserter(new_newick),
-        0);
-      //Add brackets if these are removed
-      if (new_newick.front() != newick::bracket_open
-        || new_newick.back() != newick::bracket_close)
-      {
-        new_newick = newick::Surround(new_newick);
-      }
-      assert(IsNewick(new_newick));
-      newicks.push_back(new_newick);
-      continue;
     }
+    assert(i!=j);
+    assert(j >= 0);
+    assert(j < size);
+    //Only take frequencies of the same depth into account
+    if (n[j] < 1 || depths[j] != depth) continue;
+    std::vector<int> new_newick_with_zero(n);
+    --new_newick_with_zero[i];
+    assert(new_newick_with_zero[i] == 0);
+    ++new_newick_with_zero[j];
+    //Remove brackets after possibly lonely value
+    //If there is only one or two values between
+    //the brackets, and one of these values was a
+    //1 becoming added to the other, nullify the
+    //1 and both brackets:
+    //'((1,1),2)' -> '(00102)' -> '(1,2)'
+    if (std::abs(i - j) == 1)
+    {
+      const int index_bracket_open  = std::min(i,j) - 1;
+      const int index_bracket_close = std::max(i,j) + 1;
+      if ( new_newick_with_zero[index_bracket_open]  == newick::bracket_open
+        && new_newick_with_zero[index_bracket_close] == newick::bracket_close)
+      {
+        new_newick_with_zero[index_bracket_open]  = 0;
+        new_newick_with_zero[index_bracket_close] = 0;
+      }
+    }
+    //Remove decremented i and possibly nullified brackets
+    std::vector<int> new_newick;
+    std::remove_copy(
+      new_newick_with_zero.begin(),
+      new_newick_with_zero.end(),
+      std::back_inserter(new_newick),
+      0);
+    //Add brackets if these are removed
+    if (new_newick.front() != newick::bracket_open
+      || new_newick.back() != newick::bracket_close)
+    {
+      new_newick = newick::Surround(new_newick);
+    }
+    assert(IsNewick(new_newick));
+    newicks.push_back(new_newick);
+    continue;
   }
   return newicks;
 }

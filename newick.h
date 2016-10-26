@@ -358,6 +358,12 @@ std::vector<std::vector<int>> GetSimplerNewicksHard(
   const std::vector<int>& n
 ) noexcept;
 
+///Used by GetSimplerNewicksHard
+std::vector<std::vector<int>> GetSimplerNewicksHardFromHere(
+  const std::vector<int>& n,
+  const int i
+) noexcept;
+
 
 ///IsNewick returns true if a std::string is a valid Newick
 ///and false otherwise.
