@@ -333,6 +333,14 @@ std::pair<std::size_t, std::size_t> FindOpeningAndClosingBracketIndices(
   const std::string& s
 );
 
+///Finds the indices of the innermost brackets
+///Examples:
+///(1,(1,1))
+///   ^   ^
+std::pair<std::size_t, std::size_t> FindOpeningAndClosingBracketIndices(
+  const std::vector<int>& v
+);
+
 
 ///GetSimplerNewicks creates simpler, derived Newicks from a Newick.
 ///From http://www.richelbilderbeek.nl/CppGetSimplerNewicks.htm

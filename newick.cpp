@@ -495,36 +495,9 @@ void ribi::newick::CheckNewick(const std::vector<int>& v)
   {
     //Find a leaf
     //Find index i (starting opening bracket) and j (closing bracket)
-    const std::size_t sz = v_copy.size();
-    std::size_t i = 0;
-    std::size_t j = 0;
-    for (i=0 ; i!=sz; ++i) //Index of opening bracket
-    {
-      if (v_copy[i]!=bracket_open) continue;
-
-      assert(v_copy[i]==bracket_open);
-      assert(i+1 < v_copy.size());
-      assert(v_copy[i+1]!=bracket_close); //Already checked
-
-      for (j=i+1; j!=sz; ++j)
-      {
-        if (v_copy[j]==bracket_open) { j = 0; break; }
-        if (v_copy[j]!=bracket_close) continue;
-        break;
-      }
-      if (i + 2 == j && j < sz - 1) //< (1) is valid, (1,(2)) not, ((1),2) not
-      {
-        throw std::invalid_argument(
-          "The Newick std::vector<int> cannot have the sequence"
-          "of an opening bracket, a value and a closing bracket"
-          "as a \'complex\' leaf");
-      }
-
-      if (j ==  0) continue; //j cannot be 0 after previous for loop
-      assert(j != sz); //CheckNewickForMatchingBrackets
-      break;
-    }
-    assert(v_copy[i] == bracket_open); //CheckNewickForMatchingBrackets
+    const auto p = FindOpeningAndClosingBracketIndices(v_copy);
+    const std::size_t i = p.first;
+    const std::size_t j = p.second;
     //Indices i and j found
     //Is range between i and j valid?
     assert(v_copy[i]==bracket_open);
@@ -883,6 +856,46 @@ ribi::newick::FindOpeningAndClosingBracketIndices(
   }
   assert(!"Should not get here"); //!OCLINT valid idiom
   throw std::logic_error("could not find inner pair");
+}
+
+std::pair<std::size_t, std::size_t>
+ribi::newick::FindOpeningAndClosingBracketIndices(
+  const std::vector<int>& v
+)
+{
+  CheckNewickForMatchingBrackets(v);
+  const std::size_t sz = v.size();
+  std::size_t i = 0;
+  std::size_t j = 0;
+  for (i=0 ; i!=sz; ++i) //Index of opening bracket
+  {
+    if (v[i]!=bracket_open) continue;
+
+    assert(v[i]==bracket_open);
+    assert(i+1 < v.size());
+    assert(v[i+1]!=bracket_close); //Already checked
+
+    for (j=i+1; j!=sz; ++j)
+    {
+      if (v[j]==bracket_open) { j = 0; break; }
+      if (v[j]==bracket_close)
+      {
+        assert(v[i] == bracket_open);
+        assert(v[j] == bracket_close);
+        return std::make_pair(i, j);
+      }
+    }
+    if (i + 2 == j && j < sz - 1) //< (1) is valid, (1,(2)) not, ((1),2) not
+    {
+      throw std::invalid_argument(
+        "The Newick std::vector<int> cannot have the sequence"
+        "of an opening bracket, a value and a closing bracket"
+        "as a \'complex\' leaf"
+      );
+    }
+  }
+  assert(!"Should not get here"); //!OCLINT accepted idiom
+  throw std::logic_error(__func__);
 }
 
 std::vector<int> ribi::newick::GetDepth(const std::vector<int>& n) noexcept
