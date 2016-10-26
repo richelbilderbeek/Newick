@@ -143,11 +143,12 @@ BigInteger ribi::newick::CalcNumOfSymmetriesBinary(std::vector<int> v)
 
   const int n_reserved
     = *std::max_element(std::begin(v),std::end(v))
-    + std::count_if(v.begin(), v.end(), std::bind2nd(std::greater<int>(),0));
+    + std::count_if(std::begin(v), std::end(v),
+      [](const auto i) { return i > 0; }
+  );
 
   BigInteger n_symmetries = 0;
   int id = n_reserved + 1;
-
   std::map<std::pair<int,int>,int> ids;
 
   while (1)
@@ -158,21 +159,10 @@ BigInteger ribi::newick::CalcNumOfSymmetriesBinary(std::vector<int> v)
     assert(sz >= 2);
     n_symmetries += CountAdjacentNonZeroPositives(v);
 
-    //Collect all leaves and store new leaves
-    for (std::size_t i = 0; i!=sz - 1; ++i)
-    {
-      if (v[i] > 0 && v[i+1] > 0)
-      {
-        const std::pair<int,int> p = CreateSortedPair(v[i], v[i+1]);
-        //If this leaf is new, store it
-        if (ids.find(p)==ids.end())
-        {
-          ids[p] = id;
-          ++id;
-        }
-      }
-    }
-    //Generalize all leaves
+    //Collect all leafs and store new leafs
+    StoreAllNewLeafs(v, ids, id);
+
+    //Generalize all leafs
     for (std::size_t i = 0; i < v.size()-1; ++i)
     {
       assert(v.size()>2);
@@ -1254,7 +1244,6 @@ ribi::newick::GetSimplerNewicksHardFromHere(
     }
     assert(IsNewick(new_newick));
     newicks.push_back(new_newick);
-    continue;
   }
   return newicks;
 }
@@ -1618,6 +1607,31 @@ std::vector<int> ribi::newick::ReplaceLeave(
   }
   assert(!"Should not get here"); //!OCLINT
   throw std::logic_error("Should not get here");
+}
+
+void ribi::newick::StoreAllNewLeafs(
+  const std::vector<int>& v,
+  std::map<std::pair<int,int>,int>& ids,
+  int& id
+)
+{
+  assert(!v.empty());
+  const std::size_t sz = v.size();
+  assert(sz >= 2);
+  for (std::size_t i = 0; i!=sz - 1; ++i)
+  {
+    if (v[i] > 0 && v[i+1] > 0)
+    {
+      const std::pair<int,int> p = CreateSortedPair(v[i], v[i+1]);
+
+      //If this leaf is new, store it
+      if (ids.find(p)==ids.end())
+      {
+        ids[p] = id;
+        ++id;
+      }
+    }
+  }
 }
 
 std::vector<int> ribi::newick::StringToNewick(const std::string& newick)

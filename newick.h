@@ -397,6 +397,13 @@ bool IsNewick(const std::vector<int>& v) noexcept;
 ///Returns true if c is a number or comma
 bool IsNumberOrComma(const char c) noexcept;
 
+///Used by CalcNumOfSymmetriesBinary
+void StoreAllNewLeafs(
+  const std::vector<int>& v,
+  std::map<std::pair<int,int>,int>& ids,
+  int& id
+);
+
 ///Surround surrounds the Newick with brackets
 std::vector<int> Surround(const std::vector<int>& newick) noexcept;
 
