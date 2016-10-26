@@ -28,11 +28,13 @@ before_script:
   - ./install_other_githubs.sh
 
 script: 
-  - ./build_test.sh
+  - qmake NewickTest.pro
+  - make
   - ./NewickTest
   - ./get_code_cov.sh
   - codecov
-  - ./build_desktop.sh
+  - qmake NewickDemoDesktop.pro
+  - make debug
   - ./do_oclint.sh
 
 after_success: 

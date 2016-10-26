@@ -20,7 +20,8 @@ include(../NewickVector/NewickVector.pri)
 include(../SortedBinaryNewickVector/SortedBinaryNewickVector.pri)
 include(../TwoDigitNewick/TwoDigitNewick.pri)
 
-include(TestNewickDesktop.pri)
+include(NewickDemoConsole.pri)
+include(NewickDemoDesktop.pri)
 
 SOURCES += \
     qtmain.cpp\

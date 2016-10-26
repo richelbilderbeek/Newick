@@ -166,8 +166,19 @@ std::pair<std::vector<int>,std::vector<int> >
 
 ///GetSimplerBinaryNewicks creates simpler, derived Newicks from a binary Newick.
 ///From http://www.richelbilderbeek.nl/CppGetSimplerBinaryNewicks.htm
-std::vector<std::vector<int> > GetSimplerBinaryNewicks(
-  const std::vector<int>& n) noexcept;
+std::vector<std::vector<int>> GetSimplerBinaryNewicks(
+  const std::vector<int>& n
+) noexcept;
+
+///Used by GetSimplerBinaryNewicks
+std::vector<std::vector<int>> GetSimplerBinaryNewicksSimple(
+  const std::vector<int>& n
+) noexcept;
+
+///Used by GetSimplerBinaryNewicks
+std::vector<std::vector<int>> GetSimplerBinaryNewicksComplex(
+  const std::vector<int>& n
+) noexcept;
 
 ///GetSimplerBinaryNewicksFrequencyPairs creates simpler, derived Newicks from a
 ///binary Newick as well as the frequency that is simplified.

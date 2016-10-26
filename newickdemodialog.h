@@ -10,7 +10,7 @@
 #pragma GCC diagnostic ignored "-Wunused-but-set-parameter"
 #include <boost/tuple/tuple.hpp>
 #include "about.h"
-#include "testnewickresult.h"
+#include "newickdemoresult.h"
 #pragma GCC diagnostic pop
 
 namespace ribi {

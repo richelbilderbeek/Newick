@@ -5,7 +5,7 @@
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #pragma GCC diagnostic ignored "-Wunused-but-set-parameter"
-#include "testnewickresult.h"
+#include "newickdemoresult.h"
 #pragma GCC diagnostic pop
 
 std::ostream& operator<<(std::ostream& os, const TestNewickResult& r)

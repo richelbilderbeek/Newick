@@ -12,8 +12,8 @@
 #include "newick.h"
 #include "newickvector.h"
 #include "sortedbinarynewickvector.h"
-#include "testnewick.h"
-#include "testnewickdialog.h"
+#include "newickdemo.h"
+#include "newickdemodialog.h"
 #include "twodigitnewick.h"
 #pragma GCC diagnostic pop
 

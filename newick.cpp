@@ -1008,76 +1008,23 @@ std::pair<std::vector<int>,std::vector<int> >
   throw std::logic_error("Should not get here");
 }
 
-std::vector<std::vector<int> >
+std::vector<std::vector<int>>
   ribi::newick::GetSimplerBinaryNewicks(const std::vector<int>& n) noexcept
 {
   assert(IsNewick(n));
   assert(IsUnaryNewick(n) || IsBinaryNewick(n));
 
-  std::vector<std::vector<int> > newicks;
-
   //If newick is simple (by counting the number of opening brackets),
   //there are no simpler Newicks
-  if (std::count( n.begin(),n.end(),
+  if (std::count(n.begin(),n.end(),
     static_cast<int>(bracket_open))==1)
   {
-    //Simple newicks do not need to be simplified
-    assert(n.size()==3 || n.size() == 4);
-    assert(n[0]==bracket_open);
-    assert(n[n.size()-1]==bracket_close);
-    if (n.size() == 3)
-    {
-      if (n[1]>1)
-      {
-        std::vector<int> next(n);
-        --next[1];
-        assert(newick::IsNewick(next));
-        newicks.push_back(next);
-      }
-      return newicks;
-    }
-    assert(n.size()==4);
-    if (n[1] == 1)
-    {
-      std::vector<int> next
-        = newick::CreateVector(
-            static_cast<int>(bracket_open),
-            n[2]+1,
-            static_cast<int>(bracket_close)
-          );
-      assert(newick::IsNewick(next));
-      newicks.push_back(next);
-    }
-    else
-    {
-      std::vector<int> next(n);
-      --next[1];
-      assert(newick::IsNewick(next));
-      newicks.push_back(next);
-    }
-    if (n[2] == 1)
-    {
-      std::vector<int> next
-        = newick::CreateVector(
-            static_cast<int>(bracket_open),
-            n[1]+1,
-            static_cast<int>(bracket_close)
-          );
-      assert(newick::IsNewick(next));
-      newicks.push_back(next);
-    }
-    else
-    {
-      std::vector<int> next(n);
-      --next[2];
-      assert(newick::IsNewick(next));
-      newicks.push_back(next);
-    }
-    return newicks;
+    return GetSimplerBinaryNewicksSimple(n);
   }
 
   //newick is complex
   //Generate other Newicks and their coefficients
+  std::vector<std::vector<int>> newicks;
   const int sz = n.size();
   for (int i=0; i!=sz; ++i)
   {
@@ -1123,6 +1070,67 @@ std::vector<std::vector<int> >
       assert(newick::IsNewick(next));
       newicks.push_back(next);
     }
+  }
+  return newicks;
+}
+
+std::vector<std::vector<int>>
+  ribi::newick::GetSimplerBinaryNewicksSimple(const std::vector<int>& n) noexcept
+{
+  assert(IsNewick(n));
+  assert(IsUnaryNewick(n) || IsBinaryNewick(n));
+  assert(std::count(n.begin(),n.end(),static_cast<int>(bracket_open))==1);
+  assert(n.size()==3 || n.size() == 4);
+  assert(n[0]==bracket_open);
+  assert(n[n.size()-1]==bracket_close);
+  std::vector<std::vector<int>> newicks;
+  if (n.size() == 3)
+  {
+    if (n[1]>1)
+    {
+      std::vector<int> next(n);
+      --next[1];
+      assert(newick::IsNewick(next));
+      newicks.push_back(next);
+    }
+    return newicks;
+  }
+  assert(n.size()==4);
+  if (n[1] == 1)
+  {
+    std::vector<int> next
+      = newick::CreateVector(
+          static_cast<int>(bracket_open),
+          n[2]+1,
+          static_cast<int>(bracket_close)
+        );
+    assert(newick::IsNewick(next));
+    newicks.push_back(next);
+  }
+  else
+  {
+    std::vector<int> next(n);
+    --next[1];
+    assert(newick::IsNewick(next));
+    newicks.push_back(next);
+  }
+  if (n[2] == 1)
+  {
+    std::vector<int> next
+      = newick::CreateVector(
+          static_cast<int>(bracket_open),
+          n[1]+1,
+          static_cast<int>(bracket_close)
+        );
+    assert(newick::IsNewick(next));
+    newicks.push_back(next);
+  }
+  else
+  {
+    std::vector<int> next(n);
+    --next[2];
+    assert(newick::IsNewick(next));
+    newicks.push_back(next);
   }
   return newicks;
 }

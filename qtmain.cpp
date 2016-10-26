@@ -1,20 +1,13 @@
-#include <iostream>
+#include "newickdemomenudialog.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #pragma GCC diagnostic ignored "-Wunused-but-set-parameter"
-#include <boost/lexical_cast.hpp>
-#include <boost/program_options.hpp>
-
 #include <QApplication>
-
-#include "newick.h"
-#include "qttestnewickdialog.h"
-#include "testnewick.h"
-#include "testnewickdialog.h"
-#include "testnewickmenudialog.h"
+#include "qtnewickdemodialog.h"
 #pragma GCC diagnostic pop
+
 
 int main(int argc, char *argv[])
 {

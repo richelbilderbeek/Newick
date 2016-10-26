@@ -2,7 +2,7 @@
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #pragma GCC diagnostic ignored "-Wunused-but-set-parameter"
-#include "testnewickmenudialog.h"
+#include "newickdemomenudialog.h"
 
 #include <cassert>
 #include <iostream>
@@ -12,8 +12,8 @@
 
 #include "multivector.h"
 #include "newick.h"
-#include "testnewick.h"
-#include "testnewickdialog.h"
+#include "newickdemo.h"
+#include "newickdemodialog.h"
 #pragma GCC diagnostic pop
 
 ribi::TestNewickMenuDialog::TestNewickMenuDialog()

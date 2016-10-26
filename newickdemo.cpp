@@ -34,7 +34,7 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "newickvector.h"
 #include "sortedbinarynewickvector.h"
 #include "twodigitnewick.h"
-#include "testnewick.h"
+#include "newickdemo.h"
 #pragma GCC diagnostic pop
 
 
@@ -71,31 +71,6 @@ void ribi::TestNewick::SetTime(const double time)
 {
   m_time = time;
 }
-
-//Ewensprobability = probability * num_of_combinations
-/*
-const std::string Test::GetEwensProbability() const
-{
-  const BigInteger n_combinations
-    = Newick::CalcNumOfCombinations(
-        BinaryNewickVector(GetNewick()).Get());
-  try
-  {
-    const int i = n_combinations.toInt();
-    const double d = boost::numeric_cast<double>(i);
-    const double ewens_probability = d * GetProbability();
-    return boost::lexical_cast<std::string>(ewens_probability);
-  }
-  catch (...)
-  {
-    const std::string s
-      = bigIntegerToString(n_combinations)
-      + std::string(" * ")
-      + boost::lexical_cast<std::string>(GetProbability());
-    return s;
-  }
-}
-*/
 
 bool ribi::TestBinaryNewickVector::CanCalculate(const std::string& newick_str, const double theta)
 {
