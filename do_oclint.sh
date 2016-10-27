@@ -8,7 +8,7 @@ h_files=`ls *.h | egrep -v "^ui_.*\.h$"`
   $cpp_files \
   $h_files \
   -- \
-  -c -std=c++11 -fPIC \
+  -c -std=c++14 -fPIC \
   -I../RibiClasses/CppAbout \
   -I../RibiClasses/CppContainer \
   -I../RibiClasses/CppCounter \
@@ -18,7 +18,8 @@ h_files=`ls *.h | egrep -v "^ui_.*\.h$"`
   -I../RibiClasses/CppFileIo \
   -I../RibiClasses/CppMenuDialog \
   -I../RibiClasses/CppPlane \
-  -I../StyleSheetSetter \
+  -I../BinaryNewickVector \
+  -I../ManyDigitNewick \
   -I../RibiLibraries/Apfloat \
   -I../RibiLibraries/bigint-2010.04.30 \
   -I/usr/include/c++/5 \
@@ -28,6 +29,7 @@ h_files=`ls *.h | egrep -v "^ui_.*\.h$"`
   -I/usr/include/qt4/QtGui \
   -I/usr/include/qt4/QtPrintSupport \
   -I/usr/include/qt4/QtTest
+
 
 cat oclint.log
 
