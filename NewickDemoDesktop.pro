@@ -1,6 +1,23 @@
-CONFIG += debug_and_release
 
-include(../RibiLibraries/DesktopApplication.pri)
+# C++14
+CONFIG += c++14
+QMAKE_CXX = g++-5
+QMAKE_LINK = g++-5
+QMAKE_CC = gcc-5
+QMAKE_CXXFLAGS += -Wall -Wextra -Weffc++ -Werror -std=c++14
+
+
+# Debug and release mode
+CONFIG += debug_and_release
+CONFIG(release, debug|release) {
+  message(Release mode)
+  DEFINES += NDEBUG
+}
+
+# Qt
+QT       += core gui
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 include(../RibiLibraries/Boost.pri)
 include(../RibiLibraries/BigInteger.pri)
 
