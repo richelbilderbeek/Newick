@@ -155,8 +155,7 @@ BigInteger ribi::newick::CalcNumOfSymmetriesBinary(std::vector<int> v)
         assert(i > 0);
         std::vector<int> v_new;
         std::copy(v.begin(),v.begin() + i - 1,std::back_inserter(v_new));
-        const int tid = ids[p];
-        v_new.push_back(id);
+        v_new.push_back(ids[p]);
         std::copy(v.begin() + i + 3,v.end(),std::back_inserter(v_new));
         v = v_new;
         i = (i-1 > 0 ? i-1 : 0);
