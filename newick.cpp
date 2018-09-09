@@ -974,7 +974,7 @@ std::pair<std::vector<int>,std::vector<int> >
     }
   }
   assert(!"Should not get here"); //!OCLINT
-  throw std::logic_error("Should not get here");
+  return {};
 }
 
 std::vector<std::vector<int>>
