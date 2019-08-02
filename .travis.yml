@@ -15,7 +15,7 @@ before_script:
 
 script: 
   - qmake NewickTest.pro
-  - make
+  - make --silent
   - ./NewickTest
   - ./get_code_cov.sh
   - codecov
