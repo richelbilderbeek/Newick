@@ -5,8 +5,8 @@
 
 #pragma GCC diagnostic push
 
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#pragma GCC diagnostic ignored "-Wunused-but-set-parameter"
+
+
 #include <QDialog>
 #include "newickdemodialog.h"
 #pragma GCC diagnostic pop
