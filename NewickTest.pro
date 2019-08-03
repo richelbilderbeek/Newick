@@ -1,23 +1,8 @@
-win32 {
-  # Windows only
-  message("Console application, built for Windows")
-  QMAKE_CXXFLAGS += -std=c++1y -Wall -Wextra -Weffc++
-}
+# C++17
+CONFIG += c++17
+QMAKE_CXXFLAGS += -std=c++17
 
-macx {
-  # Mac only
-  message("Console application, built for Mac")
-  QMAKE_CXXFLAGS = -mmacosx-version-min=10.7 -std=gnu0x -stdlib=libc+
-  CONFIG +=c++1y
-}
-
-unix:!macx{
-  # Linux only
-  message("Console application, built for Linux")
-
-  CONFIG += c++17
-  QMAKE_CXXFLAGS += -Wall -Wextra -Weffc++ -Werror -std=c++17
-}
+QMAKE_CXXFLAGS += -Wall -Wextra -Werror
 
 # Go ahead and use Qt.Core: it is about as platform-independent as
 # the STL and Boost
