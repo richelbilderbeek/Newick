@@ -20,7 +20,7 @@ script:
   - ./get_code_cov.sh
   - codecov
   - qmake NewickDemoDesktop.pro
-  - make debug
+  - make --silent debug
   - ./do_oclint.sh
 
 after_success: 
