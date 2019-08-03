@@ -3,7 +3,8 @@
 CONFIG += c++17
 QMAKE_CXXFLAGS += -std=c++17
 
-QMAKE_CXXFLAGS += -Wall -Wextra -Weffc++ -Werror
+# Use no -Weffc++ with Qt
+QMAKE_CXXFLAGS += -Wall -Wextra -Werror
 
 # Debug and release mode
 CONFIG += debug_and_release
