@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 
-#pragma GCC diagnostic push
+
 
 
 
@@ -21,7 +21,7 @@
 #include "sortedbinarynewickvector.h"
 #include "twodigitnewick.h"
 #include "ui_qtnewickdemodialog.h"
-#pragma GCC diagnostic pop
+
 
 ribi::QtTestNewickDialog::QtTestNewickDialog(QWidget *parent)
   : QDialog(parent),

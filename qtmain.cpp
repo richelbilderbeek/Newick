@@ -1,12 +1,12 @@
 #include "newickdemomenudialog.h"
 
-#pragma GCC diagnostic push
+
 
 
 
 #include <QApplication>
 #include "qtnewickdemodialog.h"
-#pragma GCC diagnostic pop
+
 
 
 int main(int argc, char *argv[])

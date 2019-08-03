@@ -21,7 +21,7 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include <fstream>
 #include <vector>
 
-#pragma GCC diagnostic push
+
 
 
 
@@ -35,7 +35,7 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "sortedbinarynewickvector.h"
 #include "twodigitnewick.h"
 #include "newickdemo.h"
-#pragma GCC diagnostic pop
+
 
 
 ribi::TestNewick::TestNewick()

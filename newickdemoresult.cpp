@@ -1,12 +1,12 @@
 
 #include <iostream>
 
-#pragma GCC diagnostic push
+
 
 
 
 #include "newickdemoresult.h"
-#pragma GCC diagnostic pop
+
 
 std::ostream& operator<<(std::ostream& os, const TestNewickResult& r)
 {

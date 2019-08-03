@@ -1,4 +1,4 @@
-#pragma GCC diagnostic push
+
 
 #include "newick.h"
 
@@ -21,7 +21,7 @@
 #include "BigIntegerLibrary.hh"
 
 #include "newickcpp98.h"
-#pragma GCC diagnostic pop
+
 
 //From http://www.richelbilderbeek.nl/CppAccumulate_if.htm
 template

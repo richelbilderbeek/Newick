@@ -4,14 +4,14 @@
 #include <string>
 #include <vector>
 
-#pragma GCC diagnostic push
+
 
 
 
 #include <boost/tuple/tuple.hpp>
 #include "about.h"
 #include "newickdemoresult.h"
-#pragma GCC diagnostic pop
+
 
 namespace ribi {
 

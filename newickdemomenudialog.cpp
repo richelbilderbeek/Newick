@@ -1,4 +1,4 @@
-#pragma GCC diagnostic push
+
 
 
 
@@ -14,7 +14,7 @@
 #include "newick.h"
 #include "newickdemo.h"
 #include "newickdemodialog.h"
-#pragma GCC diagnostic pop
+
 
 ribi::TestNewickMenuDialog::TestNewickMenuDialog()
 {

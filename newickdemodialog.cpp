@@ -1,7 +1,7 @@
 
 #include <fstream>
 
-#pragma GCC diagnostic push
+
 
 
 
@@ -15,7 +15,7 @@
 #include "newickdemo.h"
 #include "newickdemodialog.h"
 #include "twodigitnewick.h"
-#pragma GCC diagnostic pop
+
 
 ribi::TestNewickDialog::TestNewickDialog(const int types)
   : m_table{},

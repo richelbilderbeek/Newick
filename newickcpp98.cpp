@@ -1,4 +1,4 @@
-#pragma GCC diagnostic push
+
 
 
 #include "newickcpp98.h"
@@ -10,7 +10,7 @@
 #include "fuzzy_equal_to.h"
 #include "newick.h"
 
-#pragma GCC diagnostic pop
+
 
 ribi::NewickCpp98::NewickCpp98()
 {
