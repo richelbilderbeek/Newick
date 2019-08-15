@@ -19,8 +19,8 @@ script:
   - qmake NewickTest.pro
   - make --silent
   - ./NewickTest
-  - ./get_code_cov.sh
-  - codecov
+  - ./get_code_cov.sh >/dev/null
+  - codecov >/dev/null
   - qmake NewickDemoDesktop.pro
   - make --silent debug
   - ./do_oclint.sh
