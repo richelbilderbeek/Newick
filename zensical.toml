@@ -2,7 +2,7 @@
 site_name = "Newick"
 site_url = "https://richelbilderbeek.github.io/Newick/"
 repo_url = "https://github.com/richelbilderbeek/Newick"
-edit_uri = "blob/master/docs/"
+edit_uri = "blob/main/docs/"
 
 nav = [
   { "Start" = "README.md"}
